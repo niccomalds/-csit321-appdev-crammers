@@ -1,0 +1,452 @@
+/* Status Management Page CSS */
+
+.status-management-container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+}
+
+/* Update Your Status Panel */
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 12px auto 20px;
+  text-align: center;
+}
+
+.profile-avatar-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.status-dot-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.current-status-wrapper {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.status-selectors {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.status-option-card {
+  background: #ffffff;
+  border: 1px solid #e3e4e6;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #4b5563;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.status-option-card:hover {
+  border-color: #cbd2d9;
+  transform: translateY(-1px);
+}
+
+/* Selector Dot Indicators */
+.selector-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Set status options colors */
+.dot-Available { background-color: #10b981; }
+.dot-InClass { background-color: #f59e0b; }
+.dot-Busy { background-color: #3b82f6; }
+.dot-Out { background-color: #ef4444; }
+
+/* Selection highlights */
+.status-option-card.selected-Available {
+  background-color: #e6f7ec;
+  border-color: #10b981;
+  color: #15803d;
+}
+
+.status-option-card.selected-InClass {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.status-option-card.selected-Busy {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+.status-option-card.selected-Out {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+/* Description input box */
+.description-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.description-input-group label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #374151;
+  letter-spacing: 0.3px;
+}
+
+.description-input-field {
+  padding: 12px 14px;
+  border: 1px solid #e3e4e6;
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: #2c2c2c;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.description-input-field:focus {
+  border-color: #7a1f2b;
+  box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.08);
+}
+
+.update-status-btn {
+  background-color: #7a1f2b;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.update-status-btn:hover {
+  background-color: #631822;
+  transform: translateY(-1px);
+}
+
+.update-status-btn:active {
+  transform: scale(0.98);
+}
+
+.update-note {
+  font-size: 10.5px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 10px;
+  display: block;
+}
+
+/* Right Panel: Class Schedule */
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-class-btn {
+  background-color: #7a1f2b;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-class-btn:hover {
+  background-color: #631822;
+}
+
+/* Add/Edit inline form */
+.new-class-form-card {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.form-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #4b5563;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.form-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.form-input-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.form-input-field {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: #1f2937;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-input-field:focus {
+  border-color: #7a1f2b;
+}
+
+.form-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.form-save-btn {
+  background-color: #7a1f2b;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.form-save-btn:hover {
+  background-color: #631822;
+}
+
+.form-cancel-btn {
+  background-color: #e5e7eb;
+  color: #4b5563;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.form-cancel-btn:hover {
+  background-color: #d1d5db;
+}
+
+/* Class Schedule Cards */
+.class-schedule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #eaebed;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.class-schedule-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+}
+
+.class-schedule-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.radio-circle-placeholder {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d5db;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+}
+
+.radio-circle-placeholder:hover {
+  border-color: #7a1f2b;
+}
+
+.radio-circle-placeholder.completed {
+  border-color: #10b981;
+  background-color: #10b981;
+}
+
+.radio-circle-placeholder.completed::after {
+  content: '✓';
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.class-schedule-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.class-subject-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.class-meta-details {
+  font-size: 11.5px;
+  color: #71717a;
+  margin: 0;
+}
+
+.class-schedule-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.action-icon-btn {
+  background: none;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.action-icon-btn:hover {
+  background-color: #f4f4f5;
+  color: #18181b;
+}
+
+.action-icon-btn.delete:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Empty Schedule State */
+.empty-schedule-state {
+  padding: 44px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.empty-schedule-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #a1a1aa;
+}
+
+.empty-schedule-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #27272a;
+  margin-bottom: 2px;
+}
+
+.empty-schedule-text {
+  font-size: 11.5px;
+  color: #a1a1aa;
+  max-width: 240px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Toast/Alert notification */
+.toast-success {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #10b981;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  font-weight: 600;
+  font-size: 13px;
+  z-index: 2000;
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -5,9 +5,11 @@ import logo from '../assets/images/logo.png';
 
 function Sidebar({ activeTab = 'dashboard', setActiveTab }) {
   const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
   const handleLogout = (e) => {
     e.stopPropagation(); // Prevent trigger profile click
+    localStorage.removeItem("currentUser");
     navigate('/login');
   };
 
@@ -132,15 +134,28 @@ function Sidebar({ activeTab = 'dashboard', setActiveTab }) {
       {/* User Profile */}
       <div className="sidebar-footer" onClick={() => navigate('/login')}>
         <div className="user-profile">
-          <div className="user-avatar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
+          <div className="user-avatar" title={currentUser?.role === 'faculty' ? 'Faculty Profile' : 'Student Profile'}>
+            {currentUser?.role === 'student' ? (
+              // Graduation cap for student
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+              </svg>
+            ) : (
+              // Book for Faculty
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+              </svg>
+            )}
           </div>
           <div className="user-info">
-            <p className="user-name">Jehryn D. Laurino</p>
-            <p className="user-role">Student | BSIT</p>
+            <p className="user-name">{currentUser?.fullName || "Josemarie C. Amparo"}</p>
+            <p className="user-role">
+              {currentUser?.role === "student" 
+                ? `Student | ${currentUser.yearCourse ? currentUser.yearCourse.split(' - ')[1] || 'BSIT' : 'BSIT'}`
+                : "Faculty | CCS"}
+            </p>
           </div>
           <button className="user-logout" onClick={handleLogout} title="Logout">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
