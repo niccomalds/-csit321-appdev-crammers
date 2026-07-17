@@ -6,15 +6,40 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleClear = () => {
-    console.log("Clear entries clicked");
     // Clear inputs -- simple approach for now
     const inputs = document.querySelectorAll('.login-form input');
     inputs.forEach(i => (i.value = ''));
   };
 
-  const handleLogin = () => {
-    console.log("Login clicked");
-    navigate("/dashboard");
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    // 1. Check against seeded Faculty account
+    if (email === "teacher@cit.edu" && password === "password123") {
+      const facultyUser = {
+        fullName: "Josemarie C. Amparo",
+        email: "teacher@cit.edu",
+        role: "faculty",
+        department: "College of Computer Studies",
+        idNumber: "FAC-2024-0001"
+      };
+      localStorage.setItem("currentUser", JSON.stringify(facultyUser));
+      navigate("/dashboard");
+      return;
+    }
+
+    // 2. Check against registered Student accounts
+    const students = JSON.parse(localStorage.getItem("users") || "[]");
+    const matchedStudent = students.find(s => s.email === email && s.password === password);
+
+    if (matchedStudent) {
+      localStorage.setItem("currentUser", JSON.stringify(matchedStudent));
+      navigate("/dashboard");
+    } else {
+      alert("Invalid credentials. Note: Teachers use teacher@cit.edu / password123. Students must register first.");
+    }
   };
 
   return (
@@ -36,15 +61,15 @@ function LoginPage() {
           <div className="register-right">
             <p className="register-subtitle">Login to your account</p>
 
-            <form className="register-form login-form" onSubmit={(e)=>{e.preventDefault(); handleLogin();}}>
+            <form className="register-form login-form" onSubmit={handleLogin}>
               <div className="register-form-group">
                 <label>Email Address</label>
-                <input type="email" placeholder="you@cit.edu" required />
+                <input type="email" name="email" placeholder="you@cit.edu" required />
               </div>
 
               <div className="register-form-group">
                 <label>Password</label>
-                <input type="password" placeholder="Password" required />
+                <input type="password" name="password" placeholder="Password" required />
               </div>
 
               <div className="register-button-row">

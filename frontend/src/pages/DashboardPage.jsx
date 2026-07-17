@@ -8,6 +8,13 @@ function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState('Today, 8:45 AM');
   const [currentTime, setCurrentTime] = useState('');
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null") || {
+    fullName: "Josemarie C. Amparo",
+    role: "faculty",
+    department: "College of Computer Studies"
+  };
+  const isStudent = currentUser.role === 'student';
+
   // Formatter for breadcrumb date/time: e.g. "Mon, Jun 29 · 3:45 PM"
   const formatDateTime = (date) => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -72,6 +79,34 @@ function DashboardPage() {
       default: return '';
     }
   };
+
+  if (isStudent) {
+    return (
+      <div className="dashboard-layout">
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <main className="dashboard-content">
+          <header className="dashboard-header">
+            <div className="breadcrumb">
+              CIT-U Faculty Board / <span className="breadcrumb-active">Student Dashboard</span>
+            </div>
+            <div className="header-right">
+              <span className="header-time">{currentTime}</span>
+            </div>
+          </header>
+          <div className="dashboard-body" style={{ justifyContent: 'center' }}>
+            <div className="coming-soon-container">
+              <div className="coming-soon-icon">🎓</div>
+              <h2 className="coming-soon-title">Student Dashboard</h2>
+              <p className="coming-soon-text">
+                The student dashboard view is currently under construction.
+                Please check back later for updates as we finalize the student lookup portal.
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-layout">
