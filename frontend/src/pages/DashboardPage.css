@@ -1,0 +1,486 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;0,700;1,400&display=swap');
+
+/* Reset root layout restriction for full screen dashboard layout */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  border: none !important;
+  text-align: left;
+}
+
+/* Dashboard Layout */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f8f9fa;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #2c2c2c;
+  box-sizing: border-box;
+}
+
+.dashboard-content {
+  margin-left: 290px; /* matches Sidebar width */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fafbfc;
+  width: calc(100% - 290px);
+}
+
+/* Header styling */
+.dashboard-header {
+  background-color: #ffffff;
+  padding: 18px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.breadcrumb {
+  font-size: 13.5px;
+  color: #8c8c8c;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+.breadcrumb-active {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-time {
+  font-size: 13.5px;
+  color: #555555;
+  font-weight: 500;
+}
+
+.refresh-button {
+  background: #f1f2f4;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.refresh-button:hover {
+  background: #e2e4e8;
+  color: #111111;
+}
+
+.refresh-button:active {
+  transform: scale(0.92);
+}
+
+.refresh-button.spinning svg {
+  animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main Body styling */
+.dashboard-body {
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  flex-grow: 1;
+}
+
+.academic-year-section {
+  font-size: 15px;
+  color: #666666;
+  font-weight: 400;
+  margin-top: -6px;
+}
+
+.academic-year-semibold {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Metric Cards Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.metric-card {
+  background-color: #ffffff;
+  border: 1px solid #e3e4e6;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.015);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 135px;
+  transition: all 0.25s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  border-color: #cbd2d9;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+.badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.badge-available {
+  background-color: #e6f7ec;
+  color: #166534;
+}
+
+.badge-available .badge-dot {
+  background-color: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.card-label {
+  font-size: 12px;
+  color: #8c8c8c;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.card-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.15;
+}
+
+.card-subtext {
+  font-size: 11px;
+  color: #a0a0a0;
+  margin-top: 4px;
+}
+
+/* Split Columns */
+.panels-container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+}
+
+.panel {
+  background-color: #ffffff;
+  border: 1px solid #e3e4e6;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.panel-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.panel-action-link {
+  font-size: 13px;
+  color: #1a1a1a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.panel-action-link:hover {
+  color: #7a1f2b;
+  text-decoration: underline;
+}
+
+/* Announcement card inside Panel */
+.announcement-card {
+  border: 1px solid #eaebed;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faculty-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.announcement-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  background-color: #fde8e8;
+  color: #e53e3e;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.announcement-details {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #4a4a4a;
+}
+
+.announcement-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 11.5px;
+  color: #888888;
+  font-weight: 500;
+}
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.return-date {
+  color: #444444;
+  font-weight: 600;
+}
+
+/* Weekly Consultation list items */
+.consultation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.consultation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background-color: #f7f9fa;
+  border: 1px solid #eaebed;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.consultation-item:hover {
+  background-color: #f0f2f4;
+  border-color: #d1d5db;
+  transform: translateX(3px);
+}
+
+.consultation-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.day-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background-color: #1c1d2e;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.consultation-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.day-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.consultation-time {
+  font-size: 11px;
+  color: #8c8c8c;
+  font-weight: 500;
+}
+
+.modality-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.modality-f2f {
+  color: #15803d;
+}
+
+.modality-online {
+  color: #2563eb;
+}
+
+/* Tab Placeholders styles */
+.coming-soon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  text-align: center;
+  padding: 60px 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px dashed #cbd5e1;
+  margin: 0;
+}
+
+.coming-soon-icon {
+  font-size: 44px;
+  margin-bottom: 16px;
+  color: #94a3b8;
+}
+
+.coming-soon-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 6px;
+  margin-top: 0;
+}
+
+.coming-soon-text {
+  font-size: 13.5px;
+  color: #64748b;
+  max-width: 380px;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 1280px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .panels-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+  }
+  .dashboard-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .dashboard-header {
+    padding: 16px 20px;
+  }
+  .dashboard-body {
+    padding: 20px;
+  }
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
