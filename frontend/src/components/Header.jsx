@@ -12,7 +12,7 @@ function Header() {
         />
         <div className="header-text">
           <h1 className="header-title">CIT University</h1>
-          <h2 className="header-subtitle">Enrollment System</h2>
+          <h2 className="header-subtitle">Board System</h2>
         </div>
       </div>
     </div>
