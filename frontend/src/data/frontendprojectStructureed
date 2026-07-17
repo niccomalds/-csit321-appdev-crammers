@@ -1,0 +1,55 @@
+src/
+├── assets/
+│   └── images/
+│       ├── cit-u.jpg
+│       └── logo.png
+│
+├── components/                      ← shared, reusable UI pieces (used across multiple pages)
+│   ├── Header/
+│   │   ├── Header.jsx
+│   │   └── Header.css
+│   ├── Sidebar/
+│   │   ├── Sidebar.jsx
+│   │   └── Sidebar.css
+│   ├── Footer/
+│   │   ├── Footer.jsx
+│   │   └── Footer.css
+│   ├── Button/
+│   │   ├── Button.jsx
+│   │   └── Button.css
+│   ├── Card/
+│   │   ├── FacultyCard.jsx        ← the faculty status "card" shown on the board
+│   │   └── FacultyCard.css
+│   ├── Modal/
+│   │   ├── Modal.jsx              ← base modal wrapper (add/edit/confirm dialogs)
+│   │   └── Modal.css
+│   ├── FormInput/
+│   │   ├── FormInput.jsx          ← text/email/password fields used in login & forms
+│   │   └── FormInput.css
+│   └── LoadingSpinner/
+│       └── LoadingSpinner.jsx
+│
+├── pages/                           ← one folder per screen/route from the Figma file
+│   ├── Login/
+│   │   ├── Login.jsx
+│   │   └── Login.css
+│   ├── ForgotPassword/
+│   │   ├── ForgotPassword.jsx
+│   │   └── ForgotPassword.css
+│   ├── Dashboard/
+│   │   ├── Dashboard.jsx          ← main faculty status board view
+│   │   └── Dashboard.css
+│   ├── FacultyProfile/
+│   │   ├── FacultyProfile.jsx     ← individual faculty detail view
+│   │   └── FacultyProfile.css
+│   ├── Admin/
+│   │   ├── ManageFaculty.jsx      ← admin add/edit/delete faculty records
+│   │   └── ManageFaculty.css
+│   └── Settings/
+│       ├── Settings.jsx
+│       └── Settings.css
+│
+├── App.jsx
+├── App.css
+├── index.css
+└── main.jsx
