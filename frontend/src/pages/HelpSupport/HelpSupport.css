@@ -1,0 +1,25 @@
+.faq-item {
+  padding: 14px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-question {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.faq-answer {
+  font-size: 13px;
+  color: #666;
+}
+
+.faq-answer a {
+  color: #7a1f2b;
+  font-weight: 600;
+}
