@@ -1,8 +1,10 @@
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   const handleClear = () => {
     console.log("Clear entries clicked");
     // Clear inputs -- simple approach for now
@@ -12,6 +14,7 @@ function LoginPage() {
 
   const handleLogin = () => {
     console.log("Login clicked");
+    navigate("/dashboard");
   };
 
   return (
