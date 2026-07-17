@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import StatusManagement from './StatusManagement';
 import './DashboardPage.css';
 
 function DashboardPage() {
@@ -14,6 +15,39 @@ function DashboardPage() {
     department: "College of Computer Studies"
   };
   const isStudent = currentUser.role === 'student';
+
+  // Read status & schedules dynamically from localStorage
+  const currentStatus = localStorage.getItem("currentStatus") || "Available";
+  const currentStatusDescription = localStorage.getItem("currentStatusDescription") || "In Office — NGE, CSS Department";
+  const savedClasses = JSON.parse(localStorage.getItem("classesSchedule") || "[]");
+  const schedulesCount = savedClasses.length;
+
+  const getStatusLabel = (statusId) => {
+    switch (statusId) {
+      case "Available": return "Available";
+      case "InClass": return "In Class";
+      case "Busy": return "Busy";
+      case "Out": return "Out";
+      default: return "Available";
+    }
+  };
+
+  const getStatusDetails = (statusId) => {
+    switch (statusId) {
+      case "Available":
+        return { color: "#10b981", bg: "#e6f7ec", text: "#15803d", dot: "dot-Available" };
+      case "InClass":
+        return { color: "#f59e0b", bg: "#fef3c7", text: "#92400e", dot: "dot-InClass" };
+      case "Busy":
+        return { color: "#3b82f6", bg: "#eff6ff", text: "#1d4ed8", dot: "dot-Busy" };
+      case "Out":
+        return { color: "#ef4444", bg: "#fef2f2", text: "#b91c1c", dot: "dot-Out" };
+      default:
+        return { color: "#10b981", bg: "#e6f7ec", text: "#15803d", dot: "dot-Available" };
+    }
+  };
+
+  const statusDetails = getStatusDetails(currentStatus);
 
   // Formatter for breadcrumb date/time: e.g. "Mon, Jun 29 · 3:45 PM"
   const formatDateTime = (date) => {
@@ -153,29 +187,40 @@ function DashboardPage() {
                 <div className="card-top">
                   <div className="card-icon-container">
                     <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-                      <circle cx="18" cy="18" r="18" fill="#10B981" />
+                      <circle cx="18" cy="18" r="18" fill={statusDetails.color} />
                       <path d="M12 18L16 22L24 14" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
-                  <div className="card-status-badge badge-available">
-                    <span className="badge-dot"></span> Available
+                  <div 
+                    className="card-status-badge"
+                    style={{ backgroundColor: statusDetails.bg, color: statusDetails.text }}
+                  >
+                    <span className={`badge-dot ${statusDetails.dot}`}></span> {getStatusLabel(currentStatus)}
                   </div>
                 </div>
                 <div className="card-bottom">
                   <p className="card-label">Current Status</p>
-                  <h2 className="card-value">Available</h2>
+                  <h2 className="card-value">{getStatusLabel(currentStatus)}</h2>
+                  <p className="card-subtext">{currentStatusDescription}</p>
                 </div>
               </div>
 
-              {/* Card 2: Schedules */}
+              {/* Card 2: Class Schedules */}
               <div className="metric-card">
                 <div className="card-top">
-                  {/* Empty to match layout */}
+                  <div className="card-icon-container">
+                    <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+                      <circle cx="18" cy="18" r="18" fill="#7a1f2b" />
+                      <path d="M9 17h18M9 12h18M9 22h18" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                  </div>
                 </div>
                 <div className="card-bottom">
-                  <p className="card-label">Current Status</p>
-                  <h2 className="card-value">0 schedules</h2>
-                  <p className="card-subtext">No sessions today</p>
+                  <p className="card-label">Class Schedules</p>
+                  <h2 className="card-value">{schedulesCount} schedules</h2>
+                  <p className="card-subtext">
+                    {schedulesCount === 0 ? "No classes scheduled" : `${schedulesCount} teaching session${schedulesCount > 1 ? 's' : ''} today`}
+                  </p>
                 </div>
               </div>
 
@@ -297,6 +342,8 @@ function DashboardPage() {
             </div>
 
           </div>
+        ) : activeTab === 'status' ? (
+          <StatusManagement />
         ) : (
           /* Placeholder View for other pages */
           <div className="dashboard-body" style={{ justifyContent: 'center' }}>
@@ -305,7 +352,6 @@ function DashboardPage() {
                 {activeTab === 'settings' ? '⚙️' : 
                  activeTab === 'notifications' ? '🔔' : 
                  activeTab === 'schedule' ? '📅' : 
-                 activeTab === 'status' ? '📋' : 
                  activeTab === 'absence' ? '⚠️' : '❓'}
               </div>
               <h2 className="coming-soon-title">{getTabTitle(activeTab)} View</h2>
