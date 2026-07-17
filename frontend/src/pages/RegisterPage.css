@@ -31,21 +31,20 @@ body {
   max-width: 820px;
   background-color: #ffffff;
   /* background image placed on the left and faded to white on the right */
-  background-image: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.88) 52%, rgba(255,255,255,1) 75%), url('../assets/images/cit-u.jpg');
+  background-image: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.15) 35%, rgba(255,255,255,0.3) 42%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.7) 58%, rgba(255,255,255,0.85) 66%, rgba(255,255,255,0.95) 80%, rgba(255,255,255,1) 100%), url('../assets/images/cit-u.jpg');
   background-repeat: no-repeat;
   background-position: left center;
-  background-size: 48% auto;
+  background-size: 60% auto;
   border-radius: 12px;
   padding: 12px;
   /* strong outer drop shadow to lift the card */
   box-shadow: 0 28px 60px rgba(15, 15, 15, 0.12), 0 8px 20px rgba(15,15,15,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
   margin-top: 8px;
-  border: 1px solid rgba(232, 227, 223, 0.7);
 }
 
 .register-card-inner {
   display: flex;
-  gap: 20px;
+  gap: 0;
   align-items: stretch;
 }
 
@@ -53,10 +52,11 @@ body {
   flex: 1.1;
   min-height: 320px;
   /* remove separate left-box background so image sits in the card itself */
-  border-radius: 8px 0 0 8px;
+  border-radius: 0;
   overflow: hidden;
   position: relative;
   background: transparent;
+  border-right: none;
 }
 
 .register-left::before {
@@ -95,38 +95,30 @@ body {
   color: #6b6b6b;
 }
 
-.register-card {
-  width: 100%;
-  max-width: 820px;
-  background-color: #ffffff;
-  /* gradient layer covers entire card; image sits to the left and fades into the card */
-  background-image: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.88) 52%, rgba(255,255,255,1) 75%), url('../assets/images/cit-u.jpg');
-  /* apply settings per-layer: gradient then image */
-  background-repeat: no-repeat, no-repeat;
-  background-position: left top, left center;
-  background-size: 100% 100%, 48% auto;
-  border-radius: 12px;
-  padding: 12px;
-  /* strong outer drop shadow to lift the card */
-  box-shadow: 0 28px 60px rgba(15, 15, 15, 0.12), 0 8px 20px rgba(15,15,15,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
-  margin: auto;
-  border: 1px solid rgba(232, 227, 223, 0.7);
+.register-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  min-height: 320px;
 }
+
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .register-form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .register-form-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .register-form-group-half {
@@ -140,10 +132,11 @@ body {
   font-weight: 600;
   color: #2d2d2d;
   letter-spacing: 0.3px;
+  margin-bottom: 2px;
 }
 
 .register-form-group input {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border: 1px solid #e8e3df;
   border-radius: 6px;
   font-size: 14px;
