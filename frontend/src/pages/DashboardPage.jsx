@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import StatusManagement from './StatusManagement';
 import ConsultationSchedule from './ConsultationSchedule';
+import AbsenceAnnouncements from './AbsenceAnnouncements';
 import './DashboardPage.css';
 
 function DashboardPage() {
@@ -62,6 +63,36 @@ function DashboardPage() {
     return defaultSchedules;
   };
   const consultations = getConsultations();
+
+  // Read absence announcements from localStorage
+  const getAnnouncements = () => {
+    const saved = localStorage.getItem("absenceAnnouncements");
+    if (saved) return JSON.parse(saved);
+    const defaultAnnouncements = [
+      {
+        id: "1",
+        reason: "Official Seminar",
+        description: "Attending the National Higher Education Summit 2025 as institutional representative.",
+        startDate: "2025-07-01",
+        endDate: "2025-07-03",
+        startTime: "08:00 AM",
+        returnDate: "2025-07-04"
+      },
+      {
+        id: "2",
+        reason: "Sick Leave",
+        description: "Medical rest as advised by attending physician.",
+        startDate: "2025-06-10",
+        endDate: "2025-06-12",
+        startTime: "08:00 AM",
+        returnDate: "2025-06-13"
+      }
+    ];
+    localStorage.setItem("absenceAnnouncements", JSON.stringify(defaultAnnouncements));
+    return defaultAnnouncements;
+  };
+  const announcements = getAnnouncements();
+  const announcementsCount = announcements.length;
 
   // Formatter for breadcrumb date/time: e.g. "Mon, Jun 29 · 3:45 PM"
   const formatDateTime = (date) => {
@@ -246,7 +277,7 @@ function DashboardPage() {
                   </div>
                   <div className="card-bottom">
                     <p className="card-label">Active Announcements</p>
-                    <h2 className="card-value">1</h2>
+                    <h2 className="card-value">{announcementsCount}</h2>
                     <p className="card-subtext">Visible to students</p>
                   </div>
                 </div>
@@ -273,24 +304,35 @@ function DashboardPage() {
                   <div className="panel-header">
                     <h3 className="panel-title">Active Absence Announcements</h3>
                   </div>
-                  <div className="announcement-card">
-                    <div className="announcement-header">
-                      <span className="faculty-name">Josemarie C. Amparo</span>
-                      <span className="announcement-badge">Active</span>
-                    </div>
-                    <p className="announcement-details">
-                      Attending the National Higher Education Summit 2025 as Institutional representative.
-                    </p>
-                    <div className="announcement-footer">
-                      <div className="date-range">
-                        <span>2025-07-01</span>
-                        <span>→</span>
-                        <span>2025-07-03</span>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {announcements.length > 0 ? (
+                      announcements.map((item) => (
+                        <div key={item.id} className="announcement-card" style={{ marginBottom: 0 }}>
+                          <div className="announcement-header">
+                            <span className="faculty-name">{currentUser?.fullName || "Josemarie C. Amparo"} ({item.reason})</span>
+                            <span className="announcement-badge">Active</span>
+                          </div>
+                          <p className="announcement-details">
+                            {item.description}
+                          </p>
+                          <div className="announcement-footer">
+                            <div className="date-range">
+                              <span>{item.startDate}</span>
+                              <span>&rarr;</span>
+                              <span>{item.endDate}</span>
+                            </div>
+                            <div>
+                              Returns <span className="return-date">{item.returnDate}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div style={{ padding: "24px 0", color: "#a1a1aa", fontSize: "12.5px", textAlign: "center" }}>
+                        No active absence announcements.
                       </div>
-                      <div>
-                        Returns <span className="return-date">2025-07-04</span>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </section>
 
@@ -334,6 +376,8 @@ function DashboardPage() {
             <StatusManagement />
           ) : activeTab === 'schedule' ? (
             <ConsultationSchedule />
+          ) : activeTab === 'absence' ? (
+            <AbsenceAnnouncements />
           ) : (
             /* Placeholder View for other pages */
             <div className="coming-soon-container" style={{ alignSelf: 'center', marginTop: 40 }}>
