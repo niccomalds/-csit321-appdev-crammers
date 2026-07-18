@@ -68,6 +68,38 @@ function StatusManagement() {
     localStorage.setItem("currentStatus", selectedStatus);
     localStorage.setItem("currentStatusDescription", description);
     localStorage.setItem("statusLastUpdated", new Date().toISOString());
+
+    // Sync to facultyList in localStorage
+    const listStr = localStorage.getItem("facultyList");
+    if (listStr) {
+      const list = JSON.parse(listStr);
+      const updated = list.map((f) => {
+        if (f.email === "teacher@cit.edu") {
+          return { ...f, status: selectedStatus, statusDescription: description };
+        }
+        return f;
+      });
+      localStorage.setItem("facultyList", JSON.stringify(updated));
+    }
+
+    // Append to studentNotifications
+    const labelMap = {
+      Available: "Available",
+      InClass: "Class Ongoing",
+      Busy: "In a Meeting",
+      Out: "Out of Office"
+    };
+    const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
+    const newNotif = {
+      id: Date.now(),
+      message: `Josemarie C. Amparo changed status to ${labelMap[selectedStatus] || selectedStatus}${description ? ' — ' + description : ''}`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      date: "Today",
+      type: "status",
+      unread: true
+    };
+    localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
+
     triggerToast("Status updated successfully!");
   };
 

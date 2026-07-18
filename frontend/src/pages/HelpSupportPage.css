@@ -1,0 +1,139 @@
+/* Help and Support Page Styles */
+
+.help-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.help-section-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 20px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.help-card-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+.help-card-subtitle {
+  font-size: 13px;
+  color: #71717a;
+  margin: 6px 0 24px 0;
+}
+
+/* FAQ Accordion List */
+.faq-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item-row {
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.faq-item-row:hover {
+  border-color: #cbd5e1;
+}
+
+.faq-open {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.015);
+}
+
+.faq-question-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 18px 24px;
+  font-size: 14.5px;
+  font-weight: 700;
+  text-align: left;
+  color: #18181b;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  transition: background-color 0.15s ease;
+}
+
+.faq-question-btn:hover {
+  background-color: #fafbfc;
+}
+
+.faq-chevron-icon {
+  font-size: 18px;
+  font-weight: 500;
+  color: #71717a;
+  line-height: 1;
+}
+
+.faq-answer-content {
+  padding: 0 24px 20px 24px;
+  color: #52525b;
+  font-size: 13.5px;
+  line-height: 1.5;
+  text-align: left;
+  border-top: none;
+}
+
+.faq-answer-content p {
+  margin: 0;
+}
+
+/* System Specs Card & List */
+.help-specs-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 16px 30px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+}
+
+.system-specs-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.spec-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+}
+
+.spec-label {
+  font-weight: 600;
+  color: #71717a;
+}
+
+.spec-value {
+  font-weight: 700;
+  color: #18181b;
+}
+
+@media (max-width: 768px) {
+  .system-specs-list {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

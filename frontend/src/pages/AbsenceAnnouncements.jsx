@@ -114,6 +114,7 @@ function AbsenceAnnouncements() {
       });
       setAnnouncements(updated);
       localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
+      localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
       setEditingId(null);
       triggerToast("Absence announcement updated!");
     } else {
@@ -125,6 +126,20 @@ function AbsenceAnnouncements() {
       const updated = [...announcements, newItem];
       setAnnouncements(updated);
       localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
+      localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
+      
+      // Append student notification
+      const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
+      const newNotif = {
+        id: Date.now(),
+        message: `Josemarie C. Amparo posted an absence notice until ${form.returnDate}`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        date: "Today",
+        type: "absence",
+        unread: true
+      };
+      localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
+
       setIsAdding(false);
       triggerToast("Absence announcement published!");
     }
@@ -144,6 +159,7 @@ function AbsenceAnnouncements() {
     const updated = announcements.filter((item) => item.id !== id);
     setAnnouncements(updated);
     localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
+    localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
     triggerToast("Absence announcement deleted.");
   };
 
