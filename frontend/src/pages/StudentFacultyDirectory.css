@@ -1,0 +1,208 @@
+/* Faculty Directory View Styles */
+
+.student-directory-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.directory-filter-bar {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 16px 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  align-items: center;
+}
+
+.directory-filter-bar .search-box-wrapper {
+  max-width: 500px;
+}
+
+/* Directory Cards Grid */
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.directory-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.005);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  transition: all 0.25s ease;
+}
+
+.directory-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.035);
+  border-color: #cbd5e1;
+}
+
+.directory-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border-bottom: 1px dashed #f4f4f5;
+  padding-bottom: 14px;
+}
+
+.directory-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e4e4e7;
+}
+
+.directory-avatar-abbr {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #7a1f2b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.directory-meta-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.directory-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+.directory-dept {
+  font-size: 10.5px;
+  color: #71717a;
+}
+
+/* Card Body */
+.directory-card-body {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.contact-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-value-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #27272a;
+}
+
+.contact-value-display svg {
+  color: #71717a;
+}
+
+.email-copy-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.email-text-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #27272a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+
+.email-text-box svg {
+  color: #71717a;
+  flex-shrink: 0;
+}
+
+.email-text-box span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email-copy-btn {
+  background-color: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  color: #71717a;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.email-copy-btn:hover {
+  background-color: #e4e4e7;
+  color: #18181b;
+}
+
+.email-copy-btn.copied-status {
+  background-color: #e6f7ec;
+  border-color: #10b981;
+  color: #15803d;
+  width: auto;
+  padding: 0 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 1200px) {
+  .directory-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .directory-grid {
+    grid-template-columns: 1fr;
+  }
+  .directory-filter-bar .search-box-wrapper {
+    max-width: none;
+    width: 100%;
+  }
+}

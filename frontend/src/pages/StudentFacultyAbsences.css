@@ -1,0 +1,209 @@
+/* Absence Announcements Student View Styles */
+
+.student-absences-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.absences-filter-bar {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 16px 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  align-items: center;
+}
+
+.absences-filter-bar .search-box-wrapper {
+  max-width: 500px;
+}
+
+/* Cards Grid */
+.absences-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.student-absence-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.005);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
+  transition: all 0.25s ease;
+}
+
+.student-absence-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.035);
+  border-color: #cbd5e1;
+}
+
+.absence-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #f4f4f5;
+  padding-bottom: 14px;
+}
+
+.absence-profile-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.absence-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e4e4e7;
+}
+
+.absence-avatar-abbr {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #7a1f2b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.absence-profile-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.absence-faculty-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+.absence-faculty-dept {
+  font-size: 10.5px;
+  color: #71717a;
+}
+
+.absence-badge-status {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.status-active {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.status-upcoming {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+/* Card Body */
+.absence-card-body {
+  text-align: left;
+  margin: 16px 0;
+  flex-grow: 1;
+}
+
+.absence-reason-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0 0 6px 0;
+}
+
+.absence-description-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #4b5563;
+  margin: 0;
+}
+
+/* Card Footer */
+.absence-card-footer {
+  border-top: 1px dashed #e4e4e7;
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.absence-date-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.footer-meta-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.date-duration-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #27272a;
+}
+
+.date-duration-row svg {
+  color: #71717a;
+}
+
+.absence-return-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.return-date-badge {
+  background-color: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7a1f2b;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 900px) {
+  .absences-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .absences-filter-bar .search-box-wrapper {
+    max-width: none;
+    width: 100%;
+  }
+}

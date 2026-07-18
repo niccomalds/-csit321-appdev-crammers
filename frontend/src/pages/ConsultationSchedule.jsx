@@ -100,6 +100,7 @@ function ConsultationSchedule() {
       });
       setSchedules(updated);
       localStorage.setItem("consultationSchedules", JSON.stringify(updated));
+      localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
       setEditingId(null);
       triggerToast("Consultation schedule updated!");
     } else {
@@ -111,6 +112,20 @@ function ConsultationSchedule() {
       const updated = [...schedules, newSchedule];
       setSchedules(updated);
       localStorage.setItem("consultationSchedules", JSON.stringify(updated));
+      localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
+
+      // Append student notification
+      const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
+      const newNotif = {
+        id: Date.now(),
+        message: `Josemarie C. Amparo updated consultation schedule`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        date: "Today",
+        type: "schedule",
+        unread: true
+      };
+      localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
+
       setIsAdding(false);
       triggerToast("Consultation schedule added!");
     }
@@ -129,6 +144,7 @@ function ConsultationSchedule() {
     const updated = schedules.filter((item) => item.id !== id);
     setSchedules(updated);
     localStorage.setItem("consultationSchedules", JSON.stringify(updated));
+    localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
     triggerToast("Consultation schedule deleted.");
   };
 

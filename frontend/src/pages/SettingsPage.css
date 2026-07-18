@@ -1,0 +1,233 @@
+/* Settings Page Styles */
+
+.settings-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.settings-section-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 20px;
+  padding: 24px 30px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.settings-card-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+.settings-card-subtitle {
+  font-size: 12.5px;
+  color: #71717a;
+  margin: 4px 0 20px 0;
+}
+
+/* Two Columns Grid */
+.settings-two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.settings-right-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Inputs & Forms */
+.profile-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profile-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.profile-input-group label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.disabled-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background-color: #f4f4f5;
+  color: #71717a;
+  font-size: 13.5px;
+  cursor: not-allowed;
+  outline: none;
+}
+
+.setting-text-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+  color: #27272a;
+  font-size: 13.5px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.setting-text-input:focus {
+  border-color: #7a1f2b;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.08);
+}
+
+.password-update-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.save-settings-btn {
+  background-color: #7a1f2b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+.save-settings-btn:hover {
+  background-color: #942b39;
+  box-shadow: 0 2px 8px rgba(122, 31, 43, 0.2);
+}
+
+/* Checkbox Preference Rows */
+.checkbox-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkbox-row-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.setting-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  accent-color: #7a1f2b;
+  cursor: pointer;
+}
+
+.checkbox-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.checkbox-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #18181b;
+}
+
+.checkbox-desc {
+  font-size: 11.5px;
+  color: #71717a;
+  line-height: 1.4;
+  margin-top: 1px;
+}
+
+/* Toggle Switch Styling */
+.toggle-row-setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-left-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.toggle-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #18181b;
+}
+
+.toggle-desc {
+  font-size: 11.5px;
+  color: #71717a;
+  margin-top: 1px;
+}
+
+.theme-toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: #e4e4e7;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.switch-dot {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle-switch.switch-active {
+  background-color: #7a1f2b;
+}
+
+.theme-toggle-switch.switch-active .switch-dot {
+  transform: translateX(20px);
+}
+
+/* Responsive grid styling */
+@media (max-width: 900px) {
+  .settings-two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}

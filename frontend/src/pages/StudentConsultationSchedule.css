@@ -1,0 +1,481 @@
+/* Consultation Schedule Split Layout Redesign */
+
+.student-consultation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.consultation-split-layout {
+  display: grid;
+  grid-template-columns: 0.35fr 0.65fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Left Column: Faculty Search & List */
+.consultation-list-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.consultation-list-column .search-box-wrapper {
+  width: 100%;
+}
+
+.faculty-scroll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* Custom Scrollbar for scroll list */
+.faculty-scroll-list::-webkit-scrollbar {
+  width: 6px;
+}
+.faculty-scroll-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.faculty-scroll-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.faculty-scroll-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Faculty Cards */
+.faculty-consult-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.005);
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.faculty-consult-card:hover {
+  border-color: #cbd5e1;
+  transform: translateX(2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.015);
+}
+
+.faculty-consult-card.selected {
+  background-color: #7a1f2b;
+  border-color: #7a1f2b;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(122, 31, 43, 0.2);
+}
+
+/* Avatar Containers */
+.avatar-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e4e4e7;
+}
+
+.avatar-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #7a1f2b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+.selected .avatar-placeholder {
+  background-color: #ffffff;
+  color: #7a1f2b;
+}
+
+/* Status Indicator Dot Over Avatar */
+.avatar-status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.selected .avatar-status-dot {
+  border-color: #7a1f2b;
+}
+
+.dot-Available { background-color: #22c55e; }
+.dot-Busy { background-color: #f59e0b; }
+.dot-InClass { background-color: #3b82f6; }
+.dot-Out { background-color: #ef4444; }
+
+/* Faculty Meta */
+.faculty-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.faculty-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+.selected .faculty-name {
+  color: #ffffff;
+}
+
+.faculty-dept {
+  font-size: 11.5px;
+  color: #71717a;
+  margin: 0;
+}
+
+.selected .faculty-dept {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.empty-search-text-box {
+  padding: 30px;
+  text-align: center;
+  color: #a1a1aa;
+  font-size: 13.5px;
+}
+
+/* Right Column: Detailed Panels */
+.consultation-details-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.details-panel-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Profile Banner Card */
+.faculty-profile-banner-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-top-green {
+  height: 90px;
+  background-color: #d4edda;
+  background-image: linear-gradient(to right, #d4edda, #c3e6cb);
+}
+
+.banner-bottom-info {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+}
+
+/* Overlapping Avatars */
+.banner-avatar-img,
+.banner-avatar-placeholder {
+  margin-top: -45px;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  object-fit: cover;
+  z-index: 2;
+}
+
+.banner-avatar-placeholder {
+  background-color: #7a1f2b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.banner-texts-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  text-align: left;
+  gap: 16px;
+}
+
+.texts-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.banner-faculty-name {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 23px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+.banner-faculty-title {
+  font-size: 13.5px;
+  color: #71717a;
+  margin: 0;
+}
+
+.banner-office-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.office-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #52525b;
+}
+
+.email-link-btn {
+  color: #a1a1aa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.email-link-btn:hover {
+  color: #7a1f2b;
+}
+
+/* Profile Status Pills */
+.faculty-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.faculty-status-pill.status-available { background-color: #e6f7ec; color: #15803d; }
+.faculty-status-pill.status-available .status-dot { background-color: #22c55e; }
+
+.faculty-status-pill.status-busy { background-color: #fef3c7; color: #92400e; }
+.faculty-status-pill.status-busy .status-dot { background-color: #f59e0b; }
+
+.faculty-status-pill.status-class { background-color: #eff6ff; color: #1d4ed8; }
+.faculty-status-pill.status-class .status-dot { background-color: #3b82f6; }
+
+.faculty-status-pill.status-out { background-color: #fef2f2; color: #b91c1c; }
+.faculty-status-pill.status-out .status-dot { background-color: #ef4444; }
+
+.faculty-status-pill .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Consultation Hours Card */
+.consultation-hours-card {
+  background-color: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header-bar {
+  border-bottom: 1px solid #f4f4f5;
+  padding-bottom: 16px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.card-header-bar .card-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+}
+
+/* Schedules Table */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.consult-schedules-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.consult-schedules-table th {
+  font-size: 11px;
+  font-weight: 700;
+  color: #71717a;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #eaebed;
+  letter-spacing: 0.5px;
+}
+
+.consult-schedules-table td {
+  padding: 16px;
+  font-size: 13.5px;
+  border-bottom: 1px solid #eaebed;
+  color: #27272a;
+}
+
+.consult-schedules-table tr:last-child td {
+  border-bottom: none;
+}
+
+.table-day-cell {
+  font-weight: 700;
+  color: #18181b;
+}
+
+.table-time-cell {
+  font-weight: 500;
+  color: #18181b;
+}
+
+.table-location-cell {
+  color: #52525b;
+}
+
+/* Modality Badges */
+.mode-badge-pill {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 14px;
+  display: inline-block;
+}
+
+.mode-badge-pill.f2f {
+  background-color: #eff6ff;
+  border: 1px solid #3b82f6;
+  color: #1d4ed8;
+}
+
+.mode-badge-pill.online {
+  background-color: #fae8ff;
+  color: #a855f7;
+}
+
+/* Fallback / Empty States */
+.empty-hours-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #a1a1aa;
+}
+
+.empty-hours-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.empty-hours-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #27272a;
+  margin-bottom: 2px;
+}
+
+.empty-hours-text {
+  font-size: 11.5px;
+  color: #a1a1aa;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+.empty-details-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 80px 20px;
+  text-align: center;
+  color: #a1a1aa;
+}
+
+.fallback-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+
+.fallback-title {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #27272a;
+  margin-bottom: 4px;
+}
+
+.fallback-text {
+  font-size: 12.5px;
+  color: #71717a;
+  max-width: 280px;
+  line-height: 1.45;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 1024px) {
+  .consultation-split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .banner-texts-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .badge-right {
+    align-self: flex-start;
+  }
+}
