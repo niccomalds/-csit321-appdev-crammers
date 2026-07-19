@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './StudentFacultyStatus.css';
+import { useFacultyList } from '../hooks/useFacultyList';
 import josemarieImg from '../assets/images/josemarie.jpg';
 import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
@@ -24,42 +25,19 @@ const getFacultyAvatar = (email) => {
 };
 
 function StudentFacultyStatus() {
-  const [faculty, setFaculty] = useState([]);
+  const faculty = useFacultyList();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [selectedFaculty, setSelectedFaculty] = useState(null);
-  const [facultyClasses, setFacultyClasses] = useState([]);
+  const [selectedFacultyId, setSelectedFacultyId] = useState(() => faculty[0]?.id || null);
+  const selectedFaculty = faculty.find((item) => item.id === selectedFacultyId) || faculty[0] || null;
 
-  useEffect(() => {
-    const list = localStorage.getItem("facultyList");
-    if (list) {
-      const parsed = JSON.parse(list);
-      setFaculty(parsed);
-      // Select the first one by default if available
-      if (parsed.length > 0) {
-        setSelectedFaculty(parsed[0]);
-      }
-    }
-  }, []);
-
-  // Fetch classes when selected faculty changes
-  useEffect(() => {
-    if (!selectedFaculty) {
-      setFacultyClasses([]);
-      return;
-    }
-
-    const email = selectedFaculty.email;
-    let classes = [];
-    if (email === "teacher@cit.edu") {
-      const saved = localStorage.getItem("classesSchedule");
-      classes = saved ? JSON.parse(saved) : [];
-    } else {
-      const saved = localStorage.getItem(`classesSchedule_${email}`);
-      classes = saved ? JSON.parse(saved) : [];
-    }
-    setFacultyClasses(classes);
-  }, [selectedFaculty]);
+  const facultyClasses = (() => {
+    if (!selectedFaculty) return [];
+    const key = selectedFaculty.email === "teacher@cit.edu"
+      ? "classesSchedule"
+      : `classesSchedule_${selectedFaculty.email}`;
+    return JSON.parse(localStorage.getItem(key) || "[]");
+  })();
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -139,6 +117,7 @@ function StudentFacultyStatus() {
             </button>
           ))}
         </div>
+        <span className="faculty-live-indicator"><span aria-hidden="true" />Live updates</span>
       </div>
 
       {/* Main Split Panels */}
@@ -152,7 +131,7 @@ function StudentFacultyStatus() {
                 <div 
                   key={item.id} 
                   className={`faculty-list-card ${selectedFaculty?.id === item.id ? 'active-card' : ''}`}
-                  onClick={() => setSelectedFaculty(item)}
+                  onClick={() => setSelectedFacultyId(item.id)}
                 >
                   <div className="faculty-card-left">
                      {getFacultyAvatar(item.email) ? (

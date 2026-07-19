@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './StudentDashboard.css';
+import { useFacultyList } from '../hooks/useFacultyList';
 import josemarieImg from '../assets/images/josemarie.jpg';
 import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
@@ -24,25 +25,9 @@ const getFacultyAvatar = (email) => {
 };
 
 function StudentDashboard({ setActiveTab }) {
-  const [faculty, setFaculty] = useState([]);
-  const [notifications, setNotifications] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    // Read from localStorage
-    const list = localStorage.getItem("facultyList");
-    if (list) {
-      setFaculty(JSON.parse(list));
-    }
-    const notifs = localStorage.getItem("studentNotifications");
-    if (notifs) {
-      setNotifications(JSON.parse(notifs));
-    }
-    const user = localStorage.getItem("currentUser");
-    if (user) {
-      setCurrentUser(JSON.parse(user));
-    }
-  }, []);
+  const faculty = useFacultyList();
+  const [notifications] = useState(() => JSON.parse(localStorage.getItem("studentNotifications") || "[]"));
+  const [currentUser] = useState(() => JSON.parse(localStorage.getItem("currentUser") || "null"));
 
   const getFirstName = (fullName) => {
     if (!fullName) return "Student";
@@ -148,7 +133,10 @@ function StudentDashboard({ setActiveTab }) {
       {/* Dynamic greeting */}
       <div className="student-greeting-section">
         <h1 className="student-welcome">Good morning, {getFirstName(currentUser?.fullName)}</h1>
-        <p className="student-welcome-subtitle">Here is the current faculty availability overview for today.</p>
+        <p className="student-welcome-subtitle">
+          Here is the current faculty availability overview for today.
+          <span className="live-status-label"><span aria-hidden="true" /> Live</span>
+        </p>
       </div>
 
       {/* Metrics Cards Grid */}

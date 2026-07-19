@@ -5,6 +5,7 @@ import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
 import ugangImg from '../assets/images/ugang.jpg';
 import vonImg from '../assets/images/von.jpg';
+import { useFacultyList } from '../hooks/useFacultyList';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
@@ -24,10 +25,7 @@ const getFacultyAvatar = (email) => {
 };
 
 function StudentFacultyDirectory() {
-  const [faculty] = useState(() => {
-    const list = localStorage.getItem("facultyList");
-    return list ? JSON.parse(list) : [];
-  });
+  const faculty = useFacultyList();
   const [search, setSearch] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");

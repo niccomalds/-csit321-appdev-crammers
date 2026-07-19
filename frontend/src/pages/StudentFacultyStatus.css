@@ -481,3 +481,24 @@
     min-height: auto;
   }
 }
+.faculty-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #15803d;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.faculty-live-indicator > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14);
+}

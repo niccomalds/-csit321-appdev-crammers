@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./StatusManagement.css";
 import profImg from "../assets/images/josemarie.jpg";
 import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
+import { notifyFacultyStatusUpdated } from "../hooks/useFacultyList";
 
 function StatusManagement() {
   // Read initial states from localStorage if available
@@ -83,6 +84,7 @@ function StatusManagement() {
         return f;
       });
       localStorage.setItem("facultyList", JSON.stringify(updated));
+      notifyFacultyStatusUpdated();
     }
 
     // Append to studentNotifications
