@@ -45,6 +45,10 @@
   letter-spacing: 0.6px;
 }
 
+.logo-text-section .cit-u-word {
+  letter-spacing: 0.8px;
+}
+
 .logo-text-section p {
   font-size: 12px;
   margin: 2px 0 0 0;

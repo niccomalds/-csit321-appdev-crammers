@@ -26,7 +26,7 @@ function Sidebar({ activeTab = 'dashboard', setActiveTab }) {
       <div className="sidebar-logo">
         <img src={logo} alt="CIT-U Logo" className="sidebar-logo-img" />
         <div className="logo-text-section">
-          <h1>CIT-U<span className="faculty-word">Faculty</span></h1>
+          <h1><span className="cit-u-word">CIT-U</span><span className="faculty-word">Faculty</span></h1>
           <p>Board System</p>
         </div>
       </div>
