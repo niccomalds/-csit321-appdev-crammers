@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./AbsenceAnnouncements.css";
+import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
 
 const DEFAULT_ANNOUNCEMENTS = [
   {
@@ -47,6 +48,8 @@ function AbsenceAnnouncements() {
 
   // Toast message state
   const [toastMessage, setToastMessage] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     if (toastMessage) {
@@ -67,6 +70,7 @@ function AbsenceAnnouncements() {
   };
 
   const handleOpenAdd = () => {
+    setFormError("");
     setEditingId(null);
     setForm({
       reason: "",
@@ -80,11 +84,13 @@ function AbsenceAnnouncements() {
   };
 
   const handleCancelForm = () => {
+    setFormError("");
     setIsAdding(false);
     setEditingId(null);
   };
 
   const handleEditClick = (item) => {
+    setFormError("");
     setEditingId(item.id);
     setForm({
       reason: item.reason,
@@ -100,9 +106,18 @@ function AbsenceAnnouncements() {
   const handleSaveAnnouncement = (e) => {
     e.preventDefault();
     if (!form.reason || !form.startDate || !form.endDate || !form.startTime || !form.returnDate || !form.description) {
-      alert("Please fill in all fields.");
+      setFormError("Please complete every announcement field before publishing.");
       return;
     }
+    if (form.endDate < form.startDate) {
+      setFormError("The end date cannot be earlier than the start date.");
+      return;
+    }
+    if (form.returnDate < form.endDate) {
+      setFormError("The expected return date cannot be earlier than the end date.");
+      return;
+    }
+    setFormError("");
 
     if (editingId) {
       // Edit
@@ -161,12 +176,20 @@ function AbsenceAnnouncements() {
     localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
     localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
     triggerToast("Absence announcement deleted.");
+    setDeleteTarget(null);
   };
 
   return (
     <div className="absence-announcements-container">
       {/* Toast Banner */}
       {toastMessage && <div className="toast-success">{toastMessage}</div>}
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Delete absence announcement?"
+        message={deleteTarget ? `The “${deleteTarget.reason}” announcement will be permanently removed.` : ""}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => handleDeleteAnnouncement(deleteTarget.id)}
+      />
 
       <div className="schedule-list-header">
         <h3 className="panel-title" style={{ margin: 0 }}>Absence Announcements</h3>
@@ -186,6 +209,7 @@ function AbsenceAnnouncements() {
           <div className="form-section-title">
             {editingId ? "Edit Absence Announcement" : "New Absence Announcement"}
           </div>
+          <InlineFeedback>{formError}</InlineFeedback>
 
           <div className="schedule-form-grid">
             <div className="form-three-row">
@@ -322,7 +346,7 @@ function AbsenceAnnouncements() {
                 </button>
                 <button 
                   className="action-icon-btn delete" 
-                  onClick={() => handleDeleteAnnouncement(item.id)}
+                  onClick={() => setDeleteTarget(item)}
                   title="Delete Announcement"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

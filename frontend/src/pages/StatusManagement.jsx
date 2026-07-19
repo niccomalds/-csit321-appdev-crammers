@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./StatusManagement.css";
 import profImg from "../assets/images/josemarie.jpg";
+import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
 
 function StatusManagement() {
   // Read initial states from localStorage if available
@@ -30,6 +31,8 @@ function StatusManagement() {
 
   // Success toast notification state
   const [toastMessage, setToastMessage] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   // Auto-dismiss toast
   useEffect(() => {
@@ -110,6 +113,7 @@ function StatusManagement() {
   };
 
   const handleOpenAdd = () => {
+    setFormError("");
     setEditingId(null);
     setForm({
       subject: "",
@@ -122,6 +126,7 @@ function StatusManagement() {
   };
 
   const handleCancelForm = () => {
+    setFormError("");
     setIsAdding(false);
     setEditingId(null);
   };
@@ -129,9 +134,10 @@ function StatusManagement() {
   const handleSaveClass = (e) => {
     e.preventDefault();
     if (!form.subject || !form.section || !form.room || !form.startTime || !form.endTime) {
-      alert("Please fill out all fields.");
+      setFormError("Please complete every class schedule field before saving.");
       return;
     }
+    setFormError("");
 
     if (editingId) {
       // Edit mode
@@ -170,6 +176,7 @@ function StatusManagement() {
   };
 
   const handleEditClick = (item) => {
+    setFormError("");
     setEditingId(item.id);
     setForm({
       subject: item.subject,
@@ -186,6 +193,7 @@ function StatusManagement() {
     setClasses(updated);
     localStorage.setItem("classesSchedule", JSON.stringify(updated));
     triggerToast("Class schedule deleted.");
+    setDeleteTarget(null);
   };
 
   const handleToggleComplete = (id) => {
@@ -224,6 +232,13 @@ function StatusManagement() {
     <div className="status-management-container">
       {/* Toast Notification */}
       {toastMessage && <div className="toast-success">{toastMessage}</div>}
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Delete class schedule?"
+        message={deleteTarget ? `${deleteTarget.subject} (${deleteTarget.section}) will be permanently removed.` : ""}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => handleDeleteClass(deleteTarget.id)}
+      />
 
       {/* Left Panel: Update Status */}
       <div className="panel">
@@ -318,6 +333,7 @@ function StatusManagement() {
         {(isAdding || editingId) && (
           <form className="new-class-form-card" onSubmit={handleSaveClass}>
             <div className="form-title">{editingId ? "Edit Class" : "New Class"}</div>
+            <InlineFeedback>{formError}</InlineFeedback>
             
             <div className="form-input-group">
               <label>Subject</label>
@@ -431,7 +447,7 @@ function StatusManagement() {
                   </button>
                   <button 
                     className="action-icon-btn delete" 
-                    onClick={() => handleDeleteClass(item.id)}
+                    onClick={() => setDeleteTarget(item)}
                     title="Delete Class"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

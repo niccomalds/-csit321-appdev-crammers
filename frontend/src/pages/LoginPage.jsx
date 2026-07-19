@@ -1,18 +1,23 @@
 import Header from "../components/Header";
 import { Link, useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
+import { useState } from "react";
+import { InlineFeedback } from "../components/Feedback";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   const handleClear = () => {
     // Clear inputs -- simple approach for now
     const inputs = document.querySelectorAll('.login-form input');
     inputs.forEach(i => (i.value = ''));
+    setError("");
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setError("");
     const email = e.target.email.value;
     const password = e.target.password.value;
 
@@ -38,7 +43,7 @@ function LoginPage() {
       localStorage.setItem("currentUser", JSON.stringify(matchedStudent));
       navigate("/dashboard");
     } else {
-      alert("Invalid credentials. Note: Teachers use teacher@cit.edu / password123. Students must register first.");
+      setError("Invalid email or password. Faculty may use the provided demo account; students must register first.");
     }
   };
 
@@ -60,6 +65,7 @@ function LoginPage() {
 
           <div className="register-right">
             <p className="register-subtitle">Login to your account</p>
+            <InlineFeedback>{error}</InlineFeedback>
 
             <form className="register-form login-form" onSubmit={handleLogin}>
               <div className="register-form-group">

@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './SettingsPage.css';
+import { InlineFeedback } from '../components/Feedback';
 
 function SettingsPage() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser] = useState(() => {
+    const user = localStorage.getItem("currentUser");
+    return user ? JSON.parse(user) : null;
+  });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
@@ -21,13 +25,7 @@ function SettingsPage() {
 
   // Success toast message
   const [toastMessage, setToastMessage] = useState(null);
-
-  useEffect(() => {
-    const user = localStorage.getItem("currentUser");
-    if (user) {
-      setCurrentUser(JSON.parse(user));
-    }
-  }, []);
+  const [passwordError, setPasswordError] = useState("");
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -38,12 +36,13 @@ function SettingsPage() {
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
+    setPasswordError("");
     if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
-      alert("Please fill in all fields.");
+      setPasswordError("Please complete every password field.");
       return;
     }
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert("New passwords do not match.");
+      setPasswordError("The new password and confirmation do not match.");
       return;
     }
 
@@ -110,6 +109,7 @@ function SettingsPage() {
           <p className="settings-card-subtitle">Ensure your account uses a secure password credentials.</p>
 
           <form onSubmit={handlePasswordSubmit} className="password-update-form">
+            <InlineFeedback>{passwordError}</InlineFeedback>
             <div className="profile-input-group">
               <label>Current Password</label>
               <input 

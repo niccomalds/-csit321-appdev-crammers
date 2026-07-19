@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./ConsultationSchedule.css";
+import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
 
 const DEFAULT_SCHEDULES = [
   { id: "1", day: "Monday", mode: "Face-to-Face", startTime: "09:00 AM", endTime: "11:00 AM", location: "CSS Dept. Faculty Room" },
@@ -30,6 +31,8 @@ function ConsultationSchedule() {
 
   // Toast state
   const [toastMessage, setToastMessage] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     if (toastMessage) {
@@ -55,6 +58,7 @@ function ConsultationSchedule() {
   };
 
   const handleOpenAdd = () => {
+    setFormError("");
     setEditingId(null);
     setForm({
       day: "Monday",
@@ -67,6 +71,7 @@ function ConsultationSchedule() {
   };
 
   const handleEditClick = (item) => {
+    setFormError("");
     setEditingId(item.id);
     setForm({
       day: item.day,
@@ -79,6 +84,7 @@ function ConsultationSchedule() {
   };
 
   const handleCancelForm = () => {
+    setFormError("");
     setIsAdding(false);
     setEditingId(null);
   };
@@ -86,9 +92,10 @@ function ConsultationSchedule() {
   const handleSaveSchedule = (e) => {
     e.preventDefault();
     if (!form.day || !form.mode || !form.startTime || !form.endTime || !form.location) {
-      alert("Please fill in all fields.");
+      setFormError("Please complete every consultation schedule field before saving.");
       return;
     }
+    setFormError("");
 
     if (editingId) {
       // Edit mode
@@ -146,6 +153,7 @@ function ConsultationSchedule() {
     localStorage.setItem("consultationSchedules", JSON.stringify(updated));
     localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
     triggerToast("Consultation schedule deleted.");
+    setDeleteTarget(null);
   };
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -155,6 +163,13 @@ function ConsultationSchedule() {
     <div className="consultation-schedule-container">
       {/* Toast Alert */}
       {toastMessage && <div className="toast-success">{toastMessage}</div>}
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Delete consultation schedule?"
+        message={deleteTarget ? `${deleteTarget.day}, ${deleteTarget.startTime}–${deleteTarget.endTime} will be permanently removed.` : ""}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => handleDeleteSchedule(deleteTarget.id)}
+      />
 
       <div className="schedule-list-header">
         <h3 className="panel-title" style={{ margin: 0 }}>Weekly Consultation Schedules</h3>
@@ -174,6 +189,7 @@ function ConsultationSchedule() {
           <div className="form-section-title">
             {editingId ? "Edit Consultation Schedule" : "New Consultation Schedule"}
           </div>
+          <InlineFeedback>{formError}</InlineFeedback>
           
           <div className="schedule-form-grid">
             <div className="form-group-row">
@@ -295,7 +311,7 @@ function ConsultationSchedule() {
                 </button>
                 <button 
                   className="action-icon-btn delete" 
-                  onClick={() => handleDeleteSchedule(item.id)}
+                  onClick={() => setDeleteTarget(item)}
                   title="Delete Schedule"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
