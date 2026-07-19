@@ -21,7 +21,7 @@ function SettingsPage() {
   });
 
   // Theme states
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
 
   // Success toast message
   const [toastMessage, setToastMessage] = useState(null);
@@ -60,8 +60,13 @@ function SettingsPage() {
   };
 
   const handleThemeToggle = () => {
-    setDarkMode(!darkMode);
-    triggerToast(`${!darkMode ? 'Dark' : 'Light'} mode theme queued!`);
+    const nextDarkMode = !darkMode;
+    setDarkMode(nextDarkMode);
+    const theme = nextDarkMode ? "dark" : "light";
+    localStorage.setItem("theme", theme);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    triggerToast(`${nextDarkMode ? 'Dark' : 'Light'} mode enabled.`);
   };
 
   return (
@@ -210,8 +215,12 @@ function SettingsPage() {
                 <span className="toggle-desc">Switch from light mode to sleek dark mode styling.</span>
               </div>
               <button 
+                type="button"
                 onClick={handleThemeToggle} 
                 className={`theme-toggle-switch ${darkMode ? 'switch-active' : ''}`}
+                role="switch"
+                aria-checked={darkMode}
+                aria-label="Toggle dark mode"
               >
                 <span className="switch-dot"></span>
               </button>

@@ -1,0 +1,435 @@
+html[data-theme="dark"] {
+  --theme-bg: #0f1117;
+  --theme-surface: #181b23;
+  --theme-surface-raised: #20242e;
+  --theme-border: #303541;
+  --theme-text: #e7e9ee;
+  --theme-muted: #a4aab6;
+  background: var(--theme-bg);
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .dashboard-layout,
+html[data-theme="dark"] .dashboard-content,
+html[data-theme="dark"] .register-page {
+  background: var(--theme-bg) !important;
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] :where(.dashboard-header, .header) {
+  background: #151820 !important;
+  border-color: var(--theme-border) !important;
+}
+
+html[data-theme="dark"] :where(
+  .metric-card,
+  .panel,
+  .announcement-card,
+  .settings-section-card,
+  .help-section-card,
+  .help-specs-card,
+  .faq-item-row,
+  .student-metric-card,
+  .student-panel-card,
+  .notif-row-item,
+  .leave-row-item,
+  .faculty-filter-bar,
+  .faculty-list-card,
+  .faculty-detail-panel,
+  .timeline-class-item,
+  .directory-filter-bar,
+  .directory-card,
+  .absences-filter-bar,
+  .student-absence-card,
+  .notif-filter-bar,
+  .notif-panel-sidebar,
+  .notif-card-row,
+  .faculty-consult-card,
+  .faculty-profile-banner-card,
+  .consultation-hours-card,
+  .schedule-card-item,
+  .add-schedule-form-card,
+  .absence-card-item,
+  .add-absence-form-card,
+  .status-option-card,
+  .new-class-form-card,
+  .class-schedule-item,
+  .empty-schedule-state,
+  .empty-schedule-box,
+  .empty-absence-box,
+  .empty-search-state,
+  .coming-soon-container,
+  .confirm-dialog,
+  .register-card,
+  .register-card-inner,
+  .register-right
+) {
+  background-color: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="dark"] :where(
+  input,
+  select,
+  textarea,
+  .search-input-field,
+  .form-input-field,
+  .select-input-field,
+  .setting-text-input,
+  .directory-filter-select,
+  .disabled-input,
+  .email-copy-btn,
+  .refresh-button
+) {
+  background-color: var(--theme-surface-raised) !important;
+  border-color: #3b414e !important;
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(input, textarea)::placeholder {
+  color: #7f8795;
+}
+
+html[data-theme="dark"] :where(
+  .panel-title,
+  .card-value,
+  .faculty-name,
+  .student-welcome,
+  .student-panel-title,
+  .faculty-card-name,
+  .details-faculty-name,
+  .schedule-section-title,
+  .timeline-class-subject,
+  .directory-name,
+  .absence-title,
+  .notif-title,
+  .settings-card-title,
+  .checkbox-title,
+  .toggle-title,
+  .help-card-title,
+  .faq-question-btn,
+  .form-section-title,
+  .form-title,
+  .class-subject-title,
+  .schedule-day-name,
+  .card-title,
+  .register-subtitle,
+  .contact-value-display,
+  .email-text-box,
+  .info-row-value
+) {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(
+  .breadcrumb,
+  .header-time,
+  .academic-year-section,
+  .card-label,
+  .card-subtext,
+  .student-welcome-subtitle,
+  .faculty-card-dept,
+  .details-faculty-id,
+  .info-row-label,
+  .timeline-class-meta,
+  .directory-dept,
+  .contact-label,
+  .directory-result-count,
+  .settings-card-subtitle,
+  .checkbox-desc,
+  .toggle-desc,
+  .consultation-subtitle,
+  .absence-subtitle,
+  .schedule-location-row,
+  .absence-details-text,
+  .register-footer,
+  .register-login-link
+) {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] :where(.breadcrumb-active, .academic-year-semibold) {
+  color: var(--theme-text) !important;
+}
+
+/* Student dashboard and notification text must not retain light-theme ink colors. */
+html[data-theme="dark"] :where(
+  .student-panel-link,
+  .notif-text-message,
+  .notif-card-msg,
+  .notif-unread .notif-card-msg,
+  .leave-faculty-name,
+  .sidebar-filter-item,
+  .empty-panel-state p
+) {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(
+  .notif-text-time,
+  .notif-card-time,
+  .leave-faculty-reason,
+  .leave-faculty-return
+) {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] :where(.student-panel-link:hover, .sidebar-filter-item.active-item) {
+  color: #f08a9a !important;
+}
+
+html[data-theme="dark"] :where(.notif-unread-indicator, .leave-status-dot) {
+  background-color: #ef5367 !important;
+  box-shadow: 0 0 0 3px rgba(239, 83, 103, 0.16);
+}
+
+html[data-theme="dark"] :where(.notif-row-item:hover, .leave-row-item:hover, .notif-card-row:hover) {
+  background-color: #232833 !important;
+  border-color: #454c5a !important;
+}
+
+html[data-theme="dark"] .notif-card-row.notif-unread {
+  background-color: #211a20 !important;
+  border-left-color: #d4586b !important;
+}
+
+/* Faculty status empty states */
+html[data-theme="dark"] :where(.empty-classes-box, .empty-hours-state, .empty-details-fallback) {
+  background-color: transparent !important;
+  border-color: #697181 !important;
+}
+
+html[data-theme="dark"] :where(.empty-classes-title, .empty-hours-title, .fallback-title) {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(.empty-classes-text, .empty-hours-text, .fallback-text) {
+  color: var(--theme-muted) !important;
+}
+
+/* Student consultation profile and schedule table */
+html[data-theme="dark"] :where(
+  .banner-faculty-name,
+  .office-label,
+  .table-day-cell,
+  .table-time-cell,
+  .table-location-cell,
+  .consult-schedules-table td
+) {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(.banner-faculty-title, .email-link-btn) {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] .card-header-bar .card-title {
+  color: var(--theme-text) !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="dark"] .card-header-bar {
+  border-color: var(--theme-border) !important;
+}
+
+html[data-theme="dark"] .consult-schedules-table th {
+  background-color: var(--theme-surface-raised) !important;
+  border-color: var(--theme-border) !important;
+  color: #c4c9d2 !important;
+}
+
+html[data-theme="dark"] .consult-schedules-table td {
+  border-color: var(--theme-border) !important;
+}
+
+/* Faculty absence cards */
+html[data-theme="dark"] :where(.absence-faculty-name, .absence-reason-title, .date-duration-row) {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(.absence-faculty-dept, .absence-description-text, .footer-meta-label) {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] .absence-card-footer {
+  border-color: #596170 !important;
+}
+
+html[data-theme="dark"] .return-date-badge {
+  background-color: var(--theme-surface-raised) !important;
+  border-color: #454c5a !important;
+  color: #f08a9a !important;
+}
+
+/* Help and FAQ accordion */
+html[data-theme="dark"] .faq-item-row {
+  background-color: var(--theme-surface-raised) !important;
+  border-color: #3b414e !important;
+}
+
+html[data-theme="dark"] .faq-question-btn {
+  background-color: transparent !important;
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] .faq-question-btn:hover {
+  background-color: #292e39 !important;
+}
+
+html[data-theme="dark"] :where(.faq-chevron-icon, .faq-answer-content) {
+  color: var(--theme-muted) !important;
+}
+
+/* Faculty dashboard absence announcements */
+html[data-theme="dark"] :where(.announcement-details, .announcement-footer) {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] .announcement-footer {
+  border-color: #596170 !important;
+}
+
+html[data-theme="dark"] .return-date {
+  color: #cbd0d9 !important;
+}
+
+html[data-theme="dark"] :where(.consultation-item) {
+  background-color: var(--theme-surface-raised) !important;
+  border-color: var(--theme-border) !important;
+}
+
+html[data-theme="dark"] :where(.day-name) {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] :where(.consultation-time) {
+  color: var(--theme-muted) !important;
+}
+
+/* Faculty schedule empty state */
+html[data-theme="dark"] .empty-schedule-state {
+  background-color: transparent !important;
+  border-color: #596170 !important;
+}
+
+html[data-theme="dark"] .empty-schedule-title {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] .empty-schedule-text {
+  color: var(--theme-muted) !important;
+}
+
+/* Placeholder views */
+html[data-theme="dark"] .coming-soon-container {
+  border-color: #596170 !important;
+}
+
+html[data-theme="dark"] .coming-soon-title {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] .coming-soon-text {
+  color: var(--theme-muted) !important;
+}
+
+/* Faculty absence management metadata */
+html[data-theme="dark"] .absence-meta-row {
+  border-color: #596170 !important;
+}
+
+html[data-theme="dark"] .absence-meta-label {
+  color: #cbd0d9 !important;
+}
+
+html[data-theme="dark"] .absence-meta-val {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] :where(.action-icon-btn, .action-icon-btn.delete) {
+  color: #aeb4c0 !important;
+}
+
+html[data-theme="dark"] .spec-label {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] .spec-value {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] .empty-search-title {
+  color: var(--theme-text) !important;
+}
+
+html[data-theme="dark"] .empty-search-text {
+  color: var(--theme-muted) !important;
+}
+
+html[data-theme="dark"] :where(.faculty-list-card:hover, .directory-card:hover, .faq-question-btn:hover) {
+  background-color: #232833 !important;
+}
+
+html[data-theme="dark"] .faculty-list-card.active-card {
+  background-color: #2b1d24 !important;
+  border-color: #9a4050 !important;
+}
+
+html[data-theme="dark"] .register-card {
+  background-image: none !important;
+}
+
+html[data-theme="dark"] .register-left {
+  background-image:
+    linear-gradient(145deg, rgba(92, 18, 30, 0.76), rgba(45, 10, 18, 0.82)),
+    url('./assets/images/cit-u.jpg') !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+
+html[data-theme="dark"] .register-left-content :where(
+  .card-title,
+  .card-sub,
+  .register-left-note,
+  .register-apply-note
+) {
+  color: #f8fafc !important;
+  text-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-theme="dark"] .register-left-content .register-left-note {
+  color: #e5e7eb !important;
+}
+
+html[data-theme="dark"] .register-left-content .register-apply-note {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .register-form-group label {
+  color: #d8dbe2 !important;
+}
+
+html[data-theme="dark"] .theme-toggle-switch {
+  background-color: #3b414e;
+}
+
+html[data-theme="dark"] .theme-toggle-switch.switch-active {
+  background-color: #a33b4b;
+}
+
+html[data-theme="dark"] .switch-dot {
+  background-color: #f8fafc;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle-switch,
+  .switch-dot {
+    transition: none;
+  }
+}
