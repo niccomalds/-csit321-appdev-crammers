@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './StudentFacultyDirectory.css';
 import josemarieImg from '../assets/images/josemarie.jpg';
 import leahImg from '../assets/images/leah.jpg';
@@ -24,16 +24,14 @@ const getFacultyAvatar = (email) => {
 };
 
 function StudentFacultyDirectory() {
-  const [faculty, setFaculty] = useState([]);
-  const [search, setSearch] = useState("");
-  const [copiedId, setCopiedId] = useState(null);
-
-  useEffect(() => {
+  const [faculty] = useState(() => {
     const list = localStorage.getItem("facultyList");
-    if (list) {
-      setFaculty(JSON.parse(list));
-    }
-  }, []);
+    return list ? JSON.parse(list) : [];
+  });
+  const [search, setSearch] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [copiedId, setCopiedId] = useState(null);
 
   const getInitials = (name) => {
     if (!name) return "";
@@ -48,12 +46,32 @@ function StudentFacultyDirectory() {
     }, 2000);
   };
 
-  // Filter faculty
+  const departments = [...new Set(faculty.map((item) => item.department).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+
+  const statusOptions = [...new Set(faculty.map((item) => item.status).filter(Boolean))];
+
+  const getStatusLabel = (status) => status === "InClass" ? "In Class" : status;
+
+  const clearFilters = () => {
+    setSearch("");
+    setDepartmentFilter("all");
+    setStatusFilter("all");
+  };
+
+  const hasActiveFilters = search.trim() || departmentFilter !== "all" || statusFilter !== "all";
+
+  // Search and filter faculty
   const filteredFaculty = faculty.filter((f) => {
-    const matchesSearch = f.fullName.toLowerCase().includes(search.toLowerCase()) ||
-                          f.department.toLowerCase().includes(search.toLowerCase()) ||
-                          f.room.toLowerCase().includes(search.toLowerCase());
-    return matchesSearch;
+    const query = search.trim().toLowerCase();
+    const searchableText = [f.fullName, f.email, f.department, f.room]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    const matchesSearch = !query || searchableText.includes(query);
+    const matchesDepartment = departmentFilter === "all" || f.department === departmentFilter;
+    const matchesStatus = statusFilter === "all" || f.status === statusFilter;
+    return matchesSearch && matchesDepartment && matchesStatus;
   });
 
   return (
@@ -67,16 +85,53 @@ function StudentFacultyDirectory() {
           </svg>
           <input 
             type="text" 
-            placeholder="Search faculty by name, department, or office room..." 
+            placeholder="Search by name, email, department, or room..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="search-input-field"
+            aria-label="Search faculty directory"
           />
+        </div>
+        <div className="directory-select-group">
+          <label>
+            <span className="sr-only">Department</span>
+            <select
+              className="directory-filter-select"
+              value={departmentFilter}
+              onChange={(e) => setDepartmentFilter(e.target.value)}
+            >
+              <option value="all">All departments</option>
+              {departments.map((department) => (
+                <option key={department} value={department}>{department}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span className="sr-only">Availability status</span>
+            <select
+              className="directory-filter-select"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">All statuses</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>{getStatusLabel(status)}</option>
+              ))}
+            </select>
+          </label>
+          {hasActiveFilters && (
+            <button type="button" className="directory-clear-btn" onClick={clearFilters}>
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
       {/* Directory List */}
       <div className="directory-list-section">
+        <p className="directory-result-count" aria-live="polite">
+          Showing {filteredFaculty.length} of {faculty.length} faculty members
+        </p>
         {filteredFaculty.length > 0 ? (
           <div className="directory-grid">
             {filteredFaculty.map((item) => (
@@ -92,6 +147,10 @@ function StudentFacultyDirectory() {
                   <div className="directory-meta-info">
                     <h4 className="directory-name">{item.fullName}</h4>
                     <span className="directory-dept">{item.department}</span>
+                    <span className={`directory-status status-${item.status?.toLowerCase()}`}>
+                      <span className="directory-status-dot" aria-hidden="true" />
+                      {getStatusLabel(item.status)}
+                    </span>
                   </div>
                 </div>
 
@@ -141,7 +200,10 @@ function StudentFacultyDirectory() {
           <div className="empty-search-state">
             <span className="empty-search-icon">👥</span>
             <p className="empty-search-title">No matching contacts</p>
-            <p className="empty-search-text">No instructors match your current search.</p>
+            <p className="empty-search-text">No instructors match your current search and filters.</p>
+            {hasActiveFilters && (
+              <button type="button" className="empty-clear-btn" onClick={clearFilters}>Clear filters</button>
+            )}
           </div>
         )}
       </div>
