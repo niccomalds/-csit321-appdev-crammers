@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './StudentDashboard.css';
 import { useFacultyList } from '../hooks/useFacultyList';
 import josemarieImg from '../assets/images/josemarie.jpg';
@@ -24,7 +25,8 @@ const getFacultyAvatar = (email) => {
   }
 };
 
-function StudentDashboard({ setActiveTab }) {
+function StudentDashboard() {
+  const navigate = useNavigate();
   const faculty = useFacultyList();
   const [notifications] = useState(() => JSON.parse(localStorage.getItem("studentNotifications") || "[]"));
   const [currentUser] = useState(() => JSON.parse(localStorage.getItem("currentUser") || "null"));
@@ -203,7 +205,7 @@ function StudentDashboard({ setActiveTab }) {
         <div className="student-panel-card">
           <div className="student-panel-header">
             <h2 className="student-panel-title">Recent Notifications</h2>
-            <button className="student-panel-link" onClick={() => setActiveTab('notifications')}>View all</button>
+            <button className="student-panel-link" onClick={() => navigate('/notifications')}>View all</button>
           </div>
           <div className="student-panel-content">
             {notifications.length > 0 ? (
@@ -233,7 +235,7 @@ function StudentDashboard({ setActiveTab }) {
         <div className="student-panel-card">
           <div className="student-panel-header">
             <h2 className="student-panel-title">Faculty on Leave</h2>
-            <button className="student-panel-link" onClick={() => setActiveTab('absence')}>View all</button>
+            <button className="student-panel-link" onClick={() => navigate('/absence')}>View all</button>
           </div>
           <div className="student-panel-content">
             {leaveFaculty.length > 0 ? (

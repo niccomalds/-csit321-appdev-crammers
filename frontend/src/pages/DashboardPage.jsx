@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import StatusManagement from './StatusManagement';
 import ConsultationSchedule from './ConsultationSchedule';
@@ -154,7 +155,10 @@ const seedMockData = () => {
 };
 
 function DashboardPage() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeTab = location.pathname.replace(/^\/|\/$/g, '') || 'dashboard';
+
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState('Today, 8:45 AM');
   const [currentTime, setCurrentTime] = useState('');
@@ -264,6 +268,12 @@ function DashboardPage() {
 
   // Clock tick effect & Data Seed
   useEffect(() => {
+    const loggedInUser = localStorage.getItem("currentUser");
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
+
     seedMockData();
 
     // Sync Josemarie's status with facultyList
@@ -329,7 +339,7 @@ function DashboardPage() {
   return (
     <div className="dashboard-layout">
       {/* Sidebar Component */}
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} />
 
       {/* Main Content Area */}
       <main className="dashboard-content">
@@ -364,7 +374,7 @@ function DashboardPage() {
 
           {isStudent ? (
             activeTab === 'dashboard' ? (
-              <StudentDashboard setActiveTab={setActiveTab} />
+              <StudentDashboard />
             ) : activeTab === 'status' ? (
               <StudentFacultyStatus />
             ) : activeTab === 'schedule' ? (

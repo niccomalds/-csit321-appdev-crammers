@@ -12,13 +12,6 @@ function SettingsPage() {
     newPassword: "",
     confirmPassword: ""
   });
-  
-  // Notification states
-  const [notifs, setNotifs] = useState({
-    email: true,
-    push: true,
-    sms: false
-  });
 
   // Theme states
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
@@ -52,11 +45,6 @@ function SettingsPage() {
       newPassword: "",
       confirmPassword: ""
     });
-  };
-
-  const handleCheckboxChange = (key) => {
-    setNotifs((prev) => ({ ...prev, [key]: !prev[key] }));
-    triggerToast("Notification preferences updated!");
   };
 
   const handleThemeToggle = () => {
@@ -111,7 +99,7 @@ function SettingsPage() {
         {/* Left: Security Form */}
         <div className="settings-section-card">
           <h3 className="settings-card-title">Change Password</h3>
-          <p className="settings-card-subtitle">Ensure your account uses a secure password credentials.</p>
+          <p className="settings-card-subtitle">Ensure your account uses secure password credentials.</p>
 
           <form onSubmit={handlePasswordSubmit} className="password-update-form">
             <InlineFeedback>{passwordError}</InlineFeedback>
@@ -154,79 +142,27 @@ function SettingsPage() {
           </form>
         </div>
 
-        {/* Right: Notifications & Display settings */}
-        <div className="settings-right-wrapper">
-          
-          {/* Notifications Card */}
-          <div className="settings-section-card">
-            <h3 className="settings-card-title">Notification Channels</h3>
-            <p className="settings-card-subtitle">Choose where you want to receive status logs and board updates.</p>
+        {/* Right: Display settings */}
+        <div className="settings-section-card">
+          <h3 className="settings-card-title">Display Settings</h3>
+          <p className="settings-card-subtitle">Adjust the display interface theme settings.</p>
 
-            <div className="checkbox-options-list">
-              <label className="checkbox-row-label">
-                <input 
-                  type="checkbox" 
-                  checked={notifs.email} 
-                  onChange={() => handleCheckboxChange('email')} 
-                  className="setting-checkbox"
-                />
-                <div className="checkbox-info">
-                  <span className="checkbox-title">Email Notifications</span>
-                  <span className="checkbox-desc">Receive real-time alerts on your registered university mail inbox.</span>
-                </div>
-              </label>
-
-              <label className="checkbox-row-label">
-                <input 
-                  type="checkbox" 
-                  checked={notifs.push} 
-                  onChange={() => handleCheckboxChange('push')} 
-                  className="setting-checkbox"
-                />
-                <div className="checkbox-info">
-                  <span className="checkbox-title">Web Push Notifications</span>
-                  <span className="checkbox-desc">Receive browser banner updates while dashboard is active.</span>
-                </div>
-              </label>
-
-              <label className="checkbox-row-label">
-                <input 
-                  type="checkbox" 
-                  checked={notifs.sms} 
-                  onChange={() => handleCheckboxChange('sms')} 
-                  className="setting-checkbox"
-                />
-                <div className="checkbox-info">
-                  <span className="checkbox-title">SMS Notifications</span>
-                  <span className="checkbox-desc">Receive mobile messages for immediate absence alerts.</span>
-                </div>
-              </label>
+          <div className="toggle-row-setting">
+            <div className="toggle-left-text">
+              <span className="toggle-title">Dark Mode Theme</span>
+              <span className="toggle-desc">Switch from light mode to sleek dark mode styling.</span>
             </div>
+            <button 
+              type="button"
+              onClick={handleThemeToggle} 
+              className={`theme-toggle-switch ${darkMode ? 'switch-active' : ''}`}
+              role="switch"
+              aria-checked={darkMode}
+              aria-label="Toggle dark mode"
+            >
+              <span className="switch-dot"></span>
+            </button>
           </div>
-
-          {/* Theme Settings Card */}
-          <div className="settings-section-card">
-            <h3 className="settings-card-title">Display Settings</h3>
-            <p className="settings-card-subtitle">Adjust the display interface theme settings.</p>
-
-            <div className="toggle-row-setting">
-              <div className="toggle-left-text">
-                <span className="toggle-title">Dark Mode Theme</span>
-                <span className="toggle-desc">Switch from light mode to sleek dark mode styling.</span>
-              </div>
-              <button 
-                type="button"
-                onClick={handleThemeToggle} 
-                className={`theme-toggle-switch ${darkMode ? 'switch-active' : ''}`}
-                role="switch"
-                aria-checked={darkMode}
-                aria-label="Toggle dark mode"
-              >
-                <span className="switch-dot"></span>
-              </button>
-            </div>
-          </div>
-
         </div>
 
       </div>

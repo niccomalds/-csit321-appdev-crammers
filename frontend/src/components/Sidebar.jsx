@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import logo from '../assets/images/logo.png';
 
-function Sidebar({ activeTab = 'dashboard', setActiveTab }) {
+function Sidebar({ activeTab = 'dashboard' }) {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
 
@@ -15,9 +15,7 @@ function Sidebar({ activeTab = 'dashboard', setActiveTab }) {
 
   const handleTabClick = (e, tab) => {
     e.preventDefault();
-    if (setActiveTab) {
-      setActiveTab(tab);
-    }
+    navigate(`/${tab}`);
   };
 
   return (

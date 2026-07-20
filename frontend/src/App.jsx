@@ -11,6 +11,13 @@ function App() {
         <Route path="/" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/status" element={<DashboardPage />} />
+        <Route path="/schedule" element={<DashboardPage />} />
+        <Route path="/absence" element={<DashboardPage />} />
+        <Route path="/directory" element={<DashboardPage />} />
+        <Route path="/notifications" element={<DashboardPage />} />
+        <Route path="/settings" element={<DashboardPage />} />
+        <Route path="/help" element={<DashboardPage />} />
       </Routes>
     </Router>
   );
