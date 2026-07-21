@@ -1,26 +1,30 @@
-package com.appdev_crammers.cit_u.faculty.status.board.auth;
+package com.appdev_crammers.cit_u.faculty.status.board.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appdev_crammers.cit_u.faculty.status.board.auth.dto.LoginRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.auth.dto.RegisterRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.auth.dto.UserResponse;
+import com.appdev_crammers.cit_u.faculty.status.board.dto.LoginRequest;
+import com.appdev_crammers.cit_u.faculty.status.board.dto.RegisterRequest;
+import com.appdev_crammers.cit_u.faculty.status.board.dto.UserResponse;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ConflictException;
+import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.UnauthorizedException;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccount;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccountRepository;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserRole;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.FacultyStatusRepository;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 
 @Service
-public class AuthService {
+public class UserAccountService {
 
     private final UserAccountRepository users;
+    private final FacultyStatusRepository facultyStatuses;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserAccountRepository users, PasswordEncoder passwordEncoder) {
+    public UserAccountService(UserAccountRepository users, FacultyStatusRepository facultyStatuses, PasswordEncoder passwordEncoder) {
         this.users = users;
+        this.facultyStatuses = facultyStatuses;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -47,5 +51,17 @@ public class AuthService {
             throw new UnauthorizedException("Invalid email or password");
         }
         return UserResponse.from(user);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        UserAccount user = users.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
+        
+        if (user.getRole() == UserRole.FACULTY) {
+            facultyStatuses.findByFacultyId(id).ifPresent(facultyStatuses::delete);
+        }
+        
+        users.delete(user);
     }
 }

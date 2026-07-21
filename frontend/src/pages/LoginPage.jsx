@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import { Link, useNavigate } from "react-router-dom";
+import { authApi } from "../api/authApi";
 import "./RegisterPage.css";
 import { useState } from "react";
 import { InlineFeedback } from "../components/Feedback";
@@ -9,41 +10,24 @@ function LoginPage() {
   const [error, setError] = useState("");
 
   const handleClear = () => {
-    // Clear inputs -- simple approach for now
     const inputs = document.querySelectorAll('.login-form input');
     inputs.forEach(i => (i.value = ''));
     setError("");
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    // 1. Check against seeded Faculty account
-    if (email === "teacher@cit.edu" && password === "password123") {
-      const facultyUser = {
-        fullName: "Josemarie C. Amparo",
-        email: "teacher@cit.edu",
-        role: "faculty",
-        department: "College of Computer Studies",
-        idNumber: "FAC-2024-0001"
-      };
-      localStorage.setItem("currentUser", JSON.stringify(facultyUser));
+    try {
+      const user = await authApi.login({ email, password });
+      localStorage.setItem("currentUser", JSON.stringify(user));
       navigate("/dashboard");
-      return;
-    }
-
-    // 2. Check against registered Student accounts
-    const students = JSON.parse(localStorage.getItem("users") || "[]");
-    const matchedStudent = students.find(s => s.email === email && s.password === password);
-
-    if (matchedStudent) {
-      localStorage.setItem("currentUser", JSON.stringify(matchedStudent));
-      navigate("/dashboard");
-    } else {
-      setError("Invalid email or password. Faculty may use the provided demo account; students must register first.");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Invalid email or password.";
+      setError(msg);
     }
   };
 

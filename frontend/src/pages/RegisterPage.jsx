@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { authApi } from "../api/authApi";
 import "./RegisterPage.css";
 
 function RegisterPage() {
@@ -30,7 +31,7 @@ function RegisterPage() {
     setError("");
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -39,13 +40,13 @@ function RegisterPage() {
       return;
     }
 
-    // Save student account locally
-    const newUser = { ...formData, role: "student" };
-    const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    existingUsers.push(newUser);
-    localStorage.setItem("users", JSON.stringify(existingUsers));
-
-    navigate("/login");
+    try {
+      await authApi.register(formData);
+      navigate("/login");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Registration failed. Please check your inputs.";
+      setError(msg);
+    }
   };
 
   return (

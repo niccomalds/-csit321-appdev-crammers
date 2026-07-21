@@ -48,7 +48,7 @@ function Sidebar({ activeTab = 'dashboard' }) {
               </a>
             </li>
 
-            {currentUser?.role === 'student' ? (
+            {currentUser?.role?.toLowerCase() === 'student' ? (
               <>
                 <li className={`nav-item ${activeTab === 'status' ? 'active' : ''}`}>
                   <a href="#status" className="nav-link" onClick={(e) => handleTabClick(e, 'status')}>
@@ -191,8 +191,8 @@ function Sidebar({ activeTab = 'dashboard' }) {
       {/* User Profile */}
       <div className="sidebar-footer" onClick={() => navigate('/login')}>
         <div className="user-profile">
-          <div className="user-avatar" title={currentUser?.role === 'faculty' ? 'Faculty Profile' : 'Student Profile'}>
-            {currentUser?.role === 'student' ? (
+          <div className="user-avatar" title={currentUser?.role?.toLowerCase() === 'faculty' ? 'Faculty Profile' : 'Student Profile'}>
+            {currentUser?.role?.toLowerCase() === 'student' ? (
               // Graduation cap for student
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
@@ -209,7 +209,7 @@ function Sidebar({ activeTab = 'dashboard' }) {
           <div className="user-info">
             <p className="user-name">{currentUser?.fullName || "Josemarie C. Amparo"}</p>
             <p className="user-role">
-              {currentUser?.role === "student" 
+              {currentUser?.role?.toLowerCase() === "student" 
                 ? `Student | ${currentUser.yearCourse ? currentUser.yearCourse.split(' - ')[1] || 'BSIT' : 'BSIT'}`
                 : "Faculty | CCS"}
             </p>

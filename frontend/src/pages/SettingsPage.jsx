@@ -83,10 +83,10 @@ function SettingsPage() {
           </div>
 
           <div className="profile-input-group">
-            <label>{currentUser?.role === 'student' ? 'Course & Year' : 'Academic Department'}</label>
+            <label>{currentUser?.role?.toLowerCase() === 'student' ? 'Course & Year' : 'Academic Department'}</label>
             <input 
               type="text" 
-              value={currentUser?.role === 'student' ? currentUser?.yearCourse : currentUser?.department || ""} 
+              value={currentUser?.role?.toLowerCase() === 'student' ? currentUser?.yearCourse : currentUser?.department || ""} 
               disabled 
               className="disabled-input" 
             />

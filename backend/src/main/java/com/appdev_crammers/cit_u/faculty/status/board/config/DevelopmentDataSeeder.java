@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.appdev_crammers.cit_u.faculty.status.board.status.AvailabilityStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.status.FacultyStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.status.FacultyStatusRepository;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccount;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccountRepository;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserRole;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.AvailabilityStatus;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatus;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.FacultyStatusRepository;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 
 @Configuration
 public class DevelopmentDataSeeder {

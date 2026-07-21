@@ -1,6 +1,6 @@
-package com.appdev_crammers.cit_u.faculty.status.board.status.dto;
+package com.appdev_crammers.cit_u.faculty.status.board.dto;
 
-import com.appdev_crammers.cit_u.faculty.status.board.status.AvailabilityStatus;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.AvailabilityStatus;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
