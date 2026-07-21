@@ -1,0 +1,8 @@
+package com.appdev_crammers.cit_u.faculty.status.board.status;
+
+public enum AvailabilityStatus {
+    AVAILABLE,
+    IN_CLASS,
+    BUSY,
+    OUT
+}
