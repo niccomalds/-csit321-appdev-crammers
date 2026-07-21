@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { Link, useNavigate } from "react-router-dom";
 import { authApi } from "../api/authApi";
 import "./RegisterPage.css";
+import { useState } from "react";
+import Silk from "../components/Silk";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -51,6 +52,16 @@ function RegisterPage() {
 
   return (
     <div className="register-page">
+      <div className="silk-bg">
+        <Silk
+          speed={5}
+          scale={1}
+          color="#7a1f2b"
+          noiseIntensity={1.5}
+          rotation={0}
+        />
+      </div>
+
       <Header />
 
       {/* REGISTER CARD */}

@@ -4,6 +4,8 @@ import { authApi } from "../api/authApi";
 import "./RegisterPage.css";
 import { useState } from "react";
 import { InlineFeedback } from "../components/Feedback";
+import Silk from "../components/Silk";
+
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -33,6 +35,16 @@ function LoginPage() {
 
   return (
     <div className="register-page">
+      <div className="silk-bg">
+        <Silk
+          speed={5}
+          scale={1}
+          color="#7a1f2b"
+          noiseIntensity={1.5}
+          rotation={0}
+        />
+      </div>
+
       <Header />
 
       <div className="register-card">
