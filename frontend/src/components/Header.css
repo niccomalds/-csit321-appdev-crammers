@@ -1,9 +1,13 @@
 .header {
   width: 100%;
+  max-width: 820px; 
   padding: 16px 40px;
   background: #ffffff;
   display: flex;
   justify-content: center;
+  position: relative;   
+  z-index: 1; 
+  border-radius: 12px;
 }
 
 .header-content {
