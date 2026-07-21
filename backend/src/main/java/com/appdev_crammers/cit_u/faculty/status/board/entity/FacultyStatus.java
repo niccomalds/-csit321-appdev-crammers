@@ -1,8 +1,6 @@
-package com.appdev_crammers.cit_u.faculty.status.board.status;
+package com.appdev_crammers.cit_u.faculty.status.board.entity;
 
 import java.time.Instant;
-
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccount;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

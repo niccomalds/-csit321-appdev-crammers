@@ -1,4 +1,4 @@
-package com.appdev_crammers.cit_u.faculty.status.board.user;
+package com.appdev_crammers.cit_u.faculty.status.board.entity;
 
 import java.time.Instant;
 

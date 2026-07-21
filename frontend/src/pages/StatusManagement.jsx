@@ -1,10 +1,28 @@
 import { useState, useEffect } from "react";
 import "./StatusManagement.css";
-import profImg from "../assets/images/josemarie.jpg";
 import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
 import { notifyFacultyStatusUpdated } from "../hooks/useFacultyList";
+import { facultyApi } from "../api/facultyApi";
+
+import josemarieImg from "../assets/images/josemarie.jpg";
+import leahImg from "../assets/images/leah.jpg";
+import tulinImg from "../assets/images/tulin.jpg";
+import ugangImg from "../assets/images/ugang.jpg";
+import vonImg from "../assets/images/von.jpg";
+
+const facultyImages = {
+  "teacher@cit.edu": josemarieImg,
+  "leah.barbaso@cit.edu": leahImg,
+  "jasmine.tulin@cit.edu": tulinImg,
+  "roden.ugang@cit.edu": ugangImg,
+  "von.godinez@cit.edu": vonImg,
+};
 
 function StatusManagement() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const facultyName = currentUser?.fullName || "Josemarie C. Amparo";
+  const profileImg = facultyImages[currentUser?.email] || josemarieImg;
+
   // Read initial states from localStorage if available
   const [selectedStatus, setSelectedStatus] = useState(() => {
     return localStorage.getItem("currentStatus") || "Available";
@@ -68,7 +86,23 @@ function StatusManagement() {
     setSelectedStatus(id);
   };
 
-  const handleStatusUpdate = () => {
+  const handleStatusUpdate = async () => {
+    // Send status update request to Spring Boot backend
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+      if (currentUser && currentUser.id) {
+        const backendStatus = selectedStatus === "InClass" ? "IN_CLASS" : selectedStatus.toUpperCase();
+        
+        await facultyApi.updateStatus(currentUser.id, {
+          status: backendStatus,
+          description: description,
+          room: "CSS Dept. Faculty Room"
+        });
+      }
+    } catch (err) {
+      console.error("Failed to update status on backend database:", err);
+    }
+
     localStorage.setItem("currentStatus", selectedStatus);
     localStorage.setItem("currentStatusDescription", description);
     localStorage.setItem("statusLastUpdated", new Date().toISOString());
@@ -78,7 +112,7 @@ function StatusManagement() {
     if (listStr) {
       const list = JSON.parse(listStr);
       const updated = list.map((f) => {
-        if (f.email === "teacher@cit.edu") {
+        if (f.email === currentUser?.email) {
           return { ...f, status: selectedStatus, statusDescription: description };
         }
         return f;
@@ -97,7 +131,7 @@ function StatusManagement() {
     const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
     const newNotif = {
       id: Date.now(),
-      message: `Josemarie C. Amparo changed status to ${labelMap[selectedStatus] || selectedStatus}${description ? ' — ' + description : ''}`,
+      message: `${facultyName} changed status to ${labelMap[selectedStatus] || selectedStatus}${description ? ' — ' + description : ''}`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       date: "Today",
       type: "status",
@@ -253,7 +287,7 @@ function StatusManagement() {
 
         {/* Profile Headshot & Dot */}
         <div className="avatar-wrapper">
-          <img src={profImg} alt="Josemarie C. Amparo" className="profile-avatar-img" />
+          <img src={profileImg} alt={facultyName} className="profile-avatar-img" />
           <div 
             className="status-dot-indicator" 
             style={{ backgroundColor: getStatusColorClass(selectedStatus) }}

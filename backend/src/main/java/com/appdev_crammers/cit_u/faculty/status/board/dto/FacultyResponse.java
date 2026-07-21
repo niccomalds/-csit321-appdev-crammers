@@ -1,10 +1,10 @@
-package com.appdev_crammers.cit_u.faculty.status.board.faculty.dto;
+package com.appdev_crammers.cit_u.faculty.status.board.dto;
 
 import java.time.Instant;
 
-import com.appdev_crammers.cit_u.faculty.status.board.status.AvailabilityStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.status.FacultyStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.AvailabilityStatus;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatus;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
 
 public record FacultyResponse(
         Long id,

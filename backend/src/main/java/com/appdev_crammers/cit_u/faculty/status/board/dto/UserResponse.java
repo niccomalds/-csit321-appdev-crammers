@@ -1,7 +1,7 @@
-package com.appdev_crammers.cit_u.faculty.status.board.auth.dto;
+package com.appdev_crammers.cit_u.faculty.status.board.dto;
 
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccount;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserRole;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 
 public record UserResponse(
         Long id,

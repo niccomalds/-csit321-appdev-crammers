@@ -1,4 +1,4 @@
-package com.appdev_crammers.cit_u.faculty.status.board.faculty;
+package com.appdev_crammers.cit_u.faculty.status.board.service;
 
 import java.util.List;
 
@@ -6,23 +6,23 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.appdev_crammers.cit_u.faculty.status.board.dto.FacultyResponse;
+import com.appdev_crammers.cit_u.faculty.status.board.dto.UpdateStatusRequest;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatus;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
-import com.appdev_crammers.cit_u.faculty.status.board.faculty.dto.FacultyResponse;
-import com.appdev_crammers.cit_u.faculty.status.board.status.FacultyStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.status.FacultyStatusRepository;
-import com.appdev_crammers.cit_u.faculty.status.board.status.dto.UpdateStatusRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccount;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserAccountRepository;
-import com.appdev_crammers.cit_u.faculty.status.board.user.UserRole;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.FacultyStatusRepository;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 
 @Service
-public class FacultyService {
+public class FacultyStatusService {
 
     private final UserAccountRepository users;
     private final FacultyStatusRepository statuses;
     private final SimpMessagingTemplate messaging;
 
-    public FacultyService(UserAccountRepository users, FacultyStatusRepository statuses,
+    public FacultyStatusService(UserAccountRepository users, FacultyStatusRepository statuses,
                           SimpMessagingTemplate messaging) {
         this.users = users;
         this.statuses = statuses;

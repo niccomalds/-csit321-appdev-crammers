@@ -1,4 +1,4 @@
-package com.appdev_crammers.cit_u.faculty.status.board.auth.dto;
+package com.appdev_crammers.cit_u.faculty.status.board.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

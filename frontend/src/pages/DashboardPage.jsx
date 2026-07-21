@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { facultyApi } from '../api/facultyApi';
+import { notifyFacultyStatusUpdated } from '../hooks/useFacultyList';
 import Sidebar from '../components/Sidebar';
 import StatusManagement from './StatusManagement';
 import ConsultationSchedule from './ConsultationSchedule';
@@ -14,145 +16,7 @@ import SettingsPage from './SettingsPage';
 import HelpSupportPage from './HelpSupportPage';
 import './DashboardPage.css';
 
-const seedMockData = () => {
-  // Check if we need to reset/seed the 5-teacher directory
-  const list = localStorage.getItem("facultyList");
-  const needsReset = !list || JSON.parse(list).length !== 5 || !list.includes("von.godinez@cit.edu");
-
-  if (needsReset) {
-    const initialFaculty = [
-      {
-        id: "fac-1",
-        fullName: "Josemarie C. Amparo",
-        email: "teacher@cit.edu",
-        department: "College of Computer Studies",
-        idNumber: "FAC-2024-0001",
-        status: "Out",
-        statusDescription: "Dubai Hackathon 2026 — Official Representation",
-        room: "CSS Dept. Faculty Room"
-      },
-      {
-        id: "fac-2",
-        fullName: "Leah V. Barbaso",
-        email: "leah.barbaso@cit.edu",
-        department: "College of Computer Studies",
-        idNumber: "FAC-2024-0002",
-        status: "InClass",
-        statusDescription: "Class Ongoing — ITEC 312, Lab 3",
-        room: "CSS Dept. Faculty Room"
-      },
-      {
-        id: "fac-3",
-        fullName: "Jasmine A. Tulin",
-        email: "jasmine.tulin@cit.edu",
-        department: "College of Computer Studies",
-        idNumber: "FAC-2024-0003",
-        status: "InClass",
-        statusDescription: "Class Ongoing — CSIT122, RTL 302",
-        room: "CSS Dept. Faculty Room"
-      },
-      {
-        id: "fac-4",
-        fullName: "Roden J. Ugang",
-        email: "roden.ugang@cit.edu",
-        department: "College of Computer Studies",
-        idNumber: "FAC-2024-0004",
-        status: "Available",
-        statusDescription: "In Office — NGE, CSS Department",
-        room: "NGE Building, 3rd Floor"
-      },
-      {
-        id: "fac-5",
-        fullName: "Von Alphonse L. Godinez",
-        email: "von.godinez@cit.edu",
-        department: "College of Computer Studies",
-        idNumber: "FAC-2024-0005",
-        status: "Available",
-        statusDescription: "Available for consultation",
-        room: "CSS Dept. Faculty Room"
-      }
-    ];
-    localStorage.setItem("facultyList", JSON.stringify(initialFaculty));
-
-    const initialNotifications = [
-      {
-        id: 1,
-        message: "Leah V. Barbaso changed status to Class Ongoing — ITEC 312, Lab 3",
-        timestamp: "9:00 AM",
-        date: "Today",
-        type: "status",
-        unread: true
-      },
-      {
-        id: 2,
-        message: "Josemarie C. Amparo posted an absence notice until July 1, 2026",
-        timestamp: "June 19, 2026",
-        date: "June 19, 2026",
-        type: "absence",
-        unread: true
-      },
-      {
-        id: 3,
-        message: "Jasmine A. Tulin changed status to Class Ongoing — CSIT122, RTL 302",
-        timestamp: "1:00 PM",
-        date: "Today",
-        type: "status",
-        unread: true
-      },
-      {
-        id: 4,
-        message: "Roden J. Ugang updated consultation schedule",
-        timestamp: "Yesterday",
-        date: "Yesterday",
-        type: "schedule",
-        unread: true
-      }
-    ];
-    localStorage.setItem("studentNotifications", JSON.stringify(initialNotifications));
-
-    // Seed class schedules
-    localStorage.setItem("classesSchedule_leah.barbaso@cit.edu", JSON.stringify([
-      { id: 201, subject: "ITEC 312", section: "BSIT-3A", room: "Lab 3", startTime: "08:30 AM", endTime: "10:30 AM" }
-    ]));
-    localStorage.setItem("classesSchedule_jasmine.tulin@cit.edu", JSON.stringify([
-      { id: 301, subject: "CSIT122", section: "BSIT-2B", room: "RTL 302", startTime: "01:00 PM", endTime: "03:00 PM" }
-    ]));
-    localStorage.setItem("classesSchedule_von.godinez@cit.edu", JSON.stringify([
-      { id: 501, subject: "CSIT 321", section: "BSIT-3A", room: "Lab 2", startTime: "10:30 AM", endTime: "12:30 PM" }
-    ]));
-
-    // Seed weekly consultation schedules
-    localStorage.setItem("consultationSchedules_roden.ugang@cit.edu", JSON.stringify([
-      { id: "c401", day: "Monday", mode: "Face-to-Face", startTime: "01:00 PM", endTime: "03:00 PM", location: "NGE Room 302" },
-      { id: "c402", day: "Thursday", mode: "Online", startTime: "10:00 AM", endTime: "12:00 PM", location: "Microsoft Teams" }
-    ]));
-    localStorage.setItem("consultationSchedules_leah.barbaso@cit.edu", JSON.stringify([
-      { id: "c201", day: "Monday", mode: "Face-to-Face", startTime: "10:00 AM", endTime: "12:00 PM", location: "NGE Room 302" },
-      { id: "c202", day: "Wednesday", mode: "Face-to-Face", startTime: "01:00 PM", endTime: "03:00 PM", location: "NGE Room 302" },
-      { id: "c203", day: "Friday", mode: "Online", startTime: "09:00 AM", endTime: "10:30 AM", location: "MS Teams" }
-    ]));
-    localStorage.setItem("consultationSchedules_jasmine.tulin@cit.edu", JSON.stringify([
-      { id: "c301", day: "Wednesday", mode: "Face-to-Face", startTime: "10:30 AM", endTime: "12:30 PM", location: "CSS Dept. Faculty Room" }
-    ]));
-    localStorage.setItem("consultationSchedules_von.godinez@cit.edu", JSON.stringify([
-      { id: "c501", day: "Thursday", mode: "Face-to-Face", startTime: "01:00 PM", endTime: "03:00 PM", location: "CSS Dept. Faculty Room" }
-    ]));
-
-    // Seed absence announcements
-    localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify([
-      {
-        id: "abs-1",
-        reason: "Dubai Hackathon 2026",
-        description: "Attending the Dubai Hackathon 2026 as institutional mentor and supervisor.",
-        startDate: "2026-06-19",
-        endDate: "2026-07-01",
-        startTime: "08:00 AM",
-        returnDate: "2026-07-01"
-      }
-    ]));
-    localStorage.setItem("absenceAnnouncements", localStorage.getItem("absenceAnnouncements_teacher@cit.edu"));
-  }
-};
+// Mock data seeder removed for backend integration
 
 function DashboardPage() {
   const location = useLocation();
@@ -168,7 +32,7 @@ function DashboardPage() {
     role: "faculty",
     department: "College of Computer Studies"
   };
-  const isStudent = currentUser.role === 'student';
+  const isStudent = currentUser.role?.toLowerCase() === 'student';
 
   // Read status & schedules dynamically from localStorage
   const currentStatus = localStorage.getItem("currentStatus") || "Available";
@@ -206,42 +70,14 @@ function DashboardPage() {
   // Read consultation schedules from localStorage
   const getConsultations = () => {
     const saved = localStorage.getItem("consultationSchedules");
-    if (saved) return JSON.parse(saved);
-    const defaultSchedules = [
-      { id: "1", day: "Monday", mode: "Face-to-Face", startTime: "09:00 AM", endTime: "11:00 AM", location: "CSS Dept. Faculty Room" },
-      { id: "2", day: "Wednesday", mode: "Online", startTime: "09:00 AM", endTime: "11:00 AM", location: "CSS Dept. Faculty Room" },
-    ];
-    localStorage.setItem("consultationSchedules", JSON.stringify(defaultSchedules));
-    return defaultSchedules;
+    return saved ? JSON.parse(saved) : [];
   };
   const consultations = getConsultations();
 
   // Read absence announcements from localStorage
   const getAnnouncements = () => {
     const saved = localStorage.getItem("absenceAnnouncements");
-    if (saved) return JSON.parse(saved);
-    const defaultAnnouncements = [
-      {
-        id: "1",
-        reason: "Official Seminar",
-        description: "Attending the National Higher Education Summit 2025 as institutional representative.",
-        startDate: "2025-07-01",
-        endDate: "2025-07-03",
-        startTime: "08:00 AM",
-        returnDate: "2025-07-04"
-      },
-      {
-        id: "2",
-        reason: "Sick Leave",
-        description: "Medical rest as advised by attending physician.",
-        startDate: "2025-06-10",
-        endDate: "2025-06-12",
-        startTime: "08:00 AM",
-        returnDate: "2025-06-13"
-      }
-    ];
-    localStorage.setItem("absenceAnnouncements", JSON.stringify(defaultAnnouncements));
-    return defaultAnnouncements;
+    return saved ? JSON.parse(saved) : [];
   };
   const announcements = getAnnouncements();
   const announcementsCount = announcements.length;
@@ -274,23 +110,11 @@ function DashboardPage() {
       return;
     }
 
-    seedMockData();
-
-    // Sync Josemarie's status with facultyList
-    const listStr = localStorage.getItem("facultyList");
-    if (listStr) {
-      const list = JSON.parse(listStr);
-      const currentStatus = localStorage.getItem("currentStatus") || "Out";
-      const currentStatusDescription = localStorage.getItem("currentStatusDescription") || "Dubai Hackathon 2026 — Official Representation";
-      
-      const updated = list.map(f => {
-        if (f.email === "teacher@cit.edu") {
-          return { ...f, status: currentStatus, statusDescription: currentStatusDescription };
-        }
-        return f;
-      });
-      localStorage.setItem("facultyList", JSON.stringify(updated));
-    }
+    // Fetch faculty status list from Spring Boot backend to sync the board
+    facultyApi.findAll().then(data => {
+      localStorage.setItem("facultyList", JSON.stringify(data));
+      notifyFacultyStatusUpdated();
+    }).catch(err => console.error("Failed to sync faculty status board:", err));
 
     // Initial set
     setCurrentTime(formatDateTime(new Date()));
