@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.appdev_crammers.cit_u.faculty.status.board.dto.AbsenceAnnouncementRequest;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.AbsenceAnnouncementResponse;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.AbsenceAnnouncement;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.AbsenceAnnouncementEntity;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.AbsenceAnnouncementRepository;
@@ -23,15 +23,17 @@ public class AbsenceAnnouncementService {
     }
 
     @Transactional
-    public AbsenceAnnouncementResponse createAnnouncement(UserAccount faculty, AbsenceAnnouncementRequest request) {
+    public AbsenceAnnouncementResponse createAnnouncement(UserAccountEntity faculty, AbsenceAnnouncementRequest request) {
         if (faculty.getRole() != UserRole.FACULTY) {
             throw new ResourceNotFoundException("Faculty member not found");
         }
 
-        AbsenceAnnouncement announcement = new AbsenceAnnouncement(
+        AbsenceAnnouncementEntity announcement = new AbsenceAnnouncementEntity(
                 faculty,
                 request.reason().trim(),
                 request.startDate(),
+                request.endDate(),
+                request.startTime().trim(),
                 request.returnDate(),
                 request.details().trim());
 
@@ -54,15 +56,29 @@ public class AbsenceAnnouncementService {
 
     @Transactional
     public AbsenceAnnouncementResponse deactivateAnnouncement(Long id) {
-        AbsenceAnnouncement announcement = announcements.findById(id)
+        AbsenceAnnouncementEntity announcement = announcements.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Announcement not found"));
         announcement.deactivate();
         return AbsenceAnnouncementResponse.from(announcements.save(announcement));
     }
 
     @Transactional
+    public AbsenceAnnouncementResponse updateAnnouncement(Long id, AbsenceAnnouncementRequest request) {
+        AbsenceAnnouncementEntity announcement = announcements.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Announcement not found"));
+        announcement.update(
+                request.reason().trim(),
+                request.startDate(),
+                request.endDate(),
+                request.startTime().trim(),
+                request.returnDate(),
+                request.details().trim());
+        return AbsenceAnnouncementResponse.from(announcements.save(announcement));
+    }
+
+    @Transactional
     public void deleteAnnouncement(Long id) {
-        AbsenceAnnouncement announcement = announcements.findById(id)
+        AbsenceAnnouncementEntity announcement = announcements.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Announcement not found"));
         announcements.delete(announcement);
     }

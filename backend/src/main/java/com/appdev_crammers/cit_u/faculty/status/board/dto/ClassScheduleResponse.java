@@ -2,7 +2,7 @@ package com.appdev_crammers.cit_u.faculty.status.board.dto;
 
 import java.time.LocalTime;
 
-import com.appdev_crammers.cit_u.faculty.status.board.entity.ClassSchedule;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.ClassScheduleEntity;
 
 public record ClassScheduleResponse(
         Long id,
@@ -13,7 +13,7 @@ public record ClassScheduleResponse(
         LocalTime endTime,
         String room) {
 
-    public static ClassScheduleResponse from(ClassSchedule schedule) {
+    public static ClassScheduleResponse from(ClassScheduleEntity schedule) {
         return new ClassScheduleResponse(
                 schedule.getId(),
                 schedule.getFaculty().getFullName(),

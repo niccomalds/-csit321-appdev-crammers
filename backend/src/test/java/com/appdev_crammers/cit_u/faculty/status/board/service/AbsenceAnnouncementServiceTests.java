@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.appdev_crammers.cit_u.faculty.status.board.dto.AbsenceAnnouncementRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 
@@ -26,7 +26,7 @@ class AbsenceAnnouncementServiceTests {
 
     @Test
     void createsAndFetchesActiveAnnouncements() {
-        UserAccount faculty = userAccountRepository.save(new UserAccount(
+        UserAccountEntity faculty = userAccountRepository.save(new UserAccountEntity(
                 "Test Faculty",
                 "test.faculty@cit.edu",
                 "hashed-password",
@@ -38,6 +38,8 @@ class AbsenceAnnouncementServiceTests {
         AbsenceAnnouncementRequest request = new AbsenceAnnouncementRequest(
                 "Official Travel",
                 LocalDate.of(2026, 7, 20),
+                LocalDate.of(2026, 7, 24),
+                "08:00 AM",
                 LocalDate.of(2026, 7, 25),
                 "Attending a conference");
 

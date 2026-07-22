@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './StudentConsultationSchedule.css';
+import { consultationScheduleApi } from '../api/consultationScheduleApi';
 import josemarieImg from '../assets/images/josemarie.jpg';
 import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
@@ -45,16 +46,14 @@ function StudentConsultationSchedule() {
       setConsultations([]);
       return;
     }
-    const email = selectedFaculty.email;
-    let list = [];
-    if (email === "teacher@cit.edu") {
-      const saved = localStorage.getItem("consultationSchedules");
-      list = saved ? JSON.parse(saved) : [];
-    } else {
-      const saved = localStorage.getItem(`consultationSchedules_${email}`);
-      list = saved ? JSON.parse(saved) : [];
-    }
-    setConsultations(list);
+    consultationScheduleApi.getSchedulesByFaculty(selectedFaculty.id)
+      .then(data => {
+        setConsultations(data);
+      })
+      .catch(err => {
+        console.error("Failed to load consultation schedules:", err);
+        setConsultations([]);
+      });
   }, [selectedFaculty]);
 
   const getInitials = (name) => {

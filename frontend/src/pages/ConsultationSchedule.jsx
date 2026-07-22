@@ -1,22 +1,27 @@
 import { useState, useEffect } from "react";
 import "./ConsultationSchedule.css";
 import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
-
-const DEFAULT_SCHEDULES = [
-  { id: "1", day: "Monday", mode: "Face-to-Face", startTime: "09:00 AM", endTime: "11:00 AM", location: "CSS Dept. Faculty Room" },
-  { id: "2", day: "Wednesday", mode: "Online", startTime: "09:00 AM", endTime: "11:00 AM", location: "CSS Dept. Faculty Room" },
-];
+import { consultationScheduleApi } from "../api/consultationScheduleApi";
 
 function ConsultationSchedule() {
-  const [schedules, setSchedules] = useState(() => {
-    const saved = localStorage.getItem("consultationSchedules");
-    if (saved) {
-      return JSON.parse(saved);
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const facultyId = currentUser?.id;
+  const facultyName = currentUser?.fullName || "Josemarie C. Amparo";
+
+  const [schedules, setSchedules] = useState([]);
+
+  // Fetch schedules from backend
+  useEffect(() => {
+    if (facultyId) {
+      consultationScheduleApi.getSchedulesByFaculty(facultyId)
+        .then(data => {
+          setSchedules(data);
+        })
+        .catch(err => {
+          console.error("Failed to load consultation schedules:", err);
+        });
     }
-    // Pre-seed with Figma mockups on first load
-    localStorage.setItem("consultationSchedules", JSON.stringify(DEFAULT_SCHEDULES));
-    return DEFAULT_SCHEDULES;
-  });
+  }, [facultyId]);
 
   // Form toggles & state
   const [isAdding, setIsAdding] = useState(false);
@@ -97,44 +102,51 @@ function ConsultationSchedule() {
     }
     setFormError("");
 
+    const requestData = {
+      day: form.day,
+      mode: form.mode,
+      startTime: form.startTime,
+      endTime: form.endTime,
+      location: form.location
+    };
+
     if (editingId) {
-      // Edit mode
-      const updated = schedules.map((item) => {
-        if (item.id === editingId) {
-          return { ...item, ...form };
-        }
-        return item;
-      });
-      setSchedules(updated);
-      localStorage.setItem("consultationSchedules", JSON.stringify(updated));
-      localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
-      setEditingId(null);
-      triggerToast("Consultation schedule updated!");
+      // Edit mode (Backend PUT)
+      consultationScheduleApi.updateSchedule(editingId, requestData)
+        .then(updatedItem => {
+          setSchedules(prev => prev.map(item => item.id === editingId ? updatedItem : item));
+          setEditingId(null);
+          triggerToast("Consultation schedule updated!");
+        })
+        .catch(err => {
+          console.error("Failed to update consultation schedule:", err);
+          setFormError(err.response?.data?.message || "Failed to update schedule on server.");
+        });
     } else {
-      // Add mode
-      const newSchedule = {
-        id: Date.now().toString(),
-        ...form,
-      };
-      const updated = [...schedules, newSchedule];
-      setSchedules(updated);
-      localStorage.setItem("consultationSchedules", JSON.stringify(updated));
-      localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
+      // Add mode (Backend POST)
+      consultationScheduleApi.createSchedule(facultyId, requestData)
+        .then(newItem => {
+          setSchedules(prev => [...prev, newItem]);
 
-      // Append student notification
-      const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
-      const newNotif = {
-        id: Date.now(),
-        message: `Josemarie C. Amparo updated consultation schedule`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        date: "Today",
-        type: "schedule",
-        unread: true
-      };
-      localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
+          // Append student notification
+          const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
+          const newNotif = {
+            id: Date.now(),
+            message: `${facultyName} updated consultation schedule`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            date: "Today",
+            type: "schedule",
+            unread: true
+          };
+          localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
 
-      setIsAdding(false);
-      triggerToast("Consultation schedule added!");
+          setIsAdding(false);
+          triggerToast("Consultation schedule added!");
+        })
+        .catch(err => {
+          console.error("Failed to add consultation schedule:", err);
+          setFormError(err.response?.data?.message || "Failed to save schedule to server.");
+        });
     }
 
     // Reset Form
@@ -148,12 +160,16 @@ function ConsultationSchedule() {
   };
 
   const handleDeleteSchedule = (id) => {
-    const updated = schedules.filter((item) => item.id !== id);
-    setSchedules(updated);
-    localStorage.setItem("consultationSchedules", JSON.stringify(updated));
-    localStorage.setItem("consultationSchedules_teacher@cit.edu", JSON.stringify(updated));
-    triggerToast("Consultation schedule deleted.");
-    setDeleteTarget(null);
+    consultationScheduleApi.deleteSchedule(id)
+      .then(() => {
+        setSchedules(prev => prev.filter((item) => item.id !== id));
+        triggerToast("Consultation schedule deleted.");
+        setDeleteTarget(null);
+      })
+      .catch(err => {
+        console.error("Failed to delete schedule:", err);
+        triggerToast("Failed to delete schedule from server.");
+      });
   };
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];

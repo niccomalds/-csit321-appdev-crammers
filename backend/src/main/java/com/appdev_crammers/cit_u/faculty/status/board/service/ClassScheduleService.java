@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.appdev_crammers.cit_u.faculty.status.board.dto.ClassScheduleRequest;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.ClassScheduleResponse;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.ClassSchedule;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.ClassScheduleEntity;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.ClassScheduleRepository;
@@ -23,12 +23,12 @@ public class ClassScheduleService {
     }
 
     @Transactional
-    public ClassScheduleResponse createSchedule(UserAccount faculty, ClassScheduleRequest request) {
+    public ClassScheduleResponse createSchedule(UserAccountEntity faculty, ClassScheduleRequest request) {
         if (faculty.getRole() != UserRole.FACULTY) {
             throw new ResourceNotFoundException("Faculty member not found");
         }
 
-        ClassSchedule schedule = new ClassSchedule(
+        ClassScheduleEntity schedule = new ClassScheduleEntity(
                 faculty,
                 request.subjectName().trim(),
                 request.dayOfWeek().trim().toUpperCase(),
@@ -48,7 +48,7 @@ public class ClassScheduleService {
 
     @Transactional
     public ClassScheduleResponse updateSchedule(Long id, ClassScheduleRequest request) {
-        ClassSchedule schedule = schedules.findById(id)
+        ClassScheduleEntity schedule = schedules.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Class schedule not found"));
 
         schedule.update(
@@ -63,7 +63,7 @@ public class ClassScheduleService {
 
     @Transactional
     public void deleteSchedule(Long id) {
-        ClassSchedule schedule = schedules.findById(id)
+        ClassScheduleEntity schedule = schedules.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Class schedule not found"));
         schedules.delete(schedule);
     }

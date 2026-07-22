@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "class_schedules")
-public class ClassSchedule {
+public class ClassScheduleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class ClassSchedule {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "faculty_id", nullable = false)
-    private UserAccount faculty;
+    private UserAccountEntity faculty;
 
     @Column(nullable = false, length = 120)
     private String subjectName;
@@ -43,10 +43,10 @@ public class ClassSchedule {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    protected ClassSchedule() {
+    protected ClassScheduleEntity() {
     }
 
-    public ClassSchedule(UserAccount faculty, String subjectName, String dayOfWeek,
+    public ClassScheduleEntity(UserAccountEntity faculty, String subjectName, String dayOfWeek,
                          LocalTime startTime, LocalTime endTime, String room) {
         this.faculty = faculty;
         this.subjectName = subjectName;
@@ -57,7 +57,7 @@ public class ClassSchedule {
     }
 
     public Long getId() { return id; }
-    public UserAccount getFaculty() { return faculty; }
+    public UserAccountEntity getFaculty() { return faculty; }
     public String getSubjectName() { return subjectName; }
     public String getDayOfWeek() { return dayOfWeek; }
     public LocalTime getStartTime() { return startTime; }

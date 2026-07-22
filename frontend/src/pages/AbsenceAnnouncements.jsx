@@ -1,42 +1,16 @@
 import { useState, useEffect } from "react";
 import "./AbsenceAnnouncements.css";
 import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
-
-const DEFAULT_ANNOUNCEMENTS = [
-  {
-    id: "1",
-    reason: "Official Seminar",
-    description: "Attending the National Higher Education Summit 2025 as institutional representative.",
-    startDate: "2025-07-01",
-    endDate: "2025-07-03",
-    startTime: "08:00 AM",
-    returnDate: "2025-07-04",
-  },
-  {
-    id: "2",
-    reason: "Sick Leave",
-    description: "Medical rest as advised by attending physician.",
-    startDate: "2025-06-10",
-    endDate: "2025-06-12",
-    startTime: "08:00 AM",
-    returnDate: "2025-06-13",
-  },
-];
+import { announcementApi } from "../api/announcementApi";
 
 function AbsenceAnnouncements() {
-  const [announcements, setAnnouncements] = useState(() => {
-    const saved = localStorage.getItem("absenceAnnouncements");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    // Pre-seed mock data on first load
-    localStorage.setItem("absenceAnnouncements", JSON.stringify(DEFAULT_ANNOUNCEMENTS));
-    return DEFAULT_ANNOUNCEMENTS;
-  });
-
+  const [announcements, setAnnouncements] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const facultyId = currentUser?.id;
+
   const [form, setForm] = useState({
     reason: "",
     startDate: "",
@@ -45,6 +19,24 @@ function AbsenceAnnouncements() {
     returnDate: "",
     description: "",
   });
+
+  useEffect(() => {
+    if (facultyId) {
+      announcementApi.getAnnouncementsByFaculty(facultyId)
+        .then(data => {
+          // Map backend field names (details -> description) if necessary
+          const mapped = data.map(item => ({
+            ...item,
+            description: item.details || item.description
+          }));
+          setAnnouncements(mapped);
+        })
+        .catch(err => {
+          console.error("Failed to load announcements:", err);
+          setFormError("Could not load announcements from server.");
+        });
+    }
+  }, [facultyId]);
 
   // Toast message state
   const [toastMessage, setToastMessage] = useState(null);
@@ -119,44 +111,47 @@ function AbsenceAnnouncements() {
     }
     setFormError("");
 
-    if (editingId) {
-      // Edit
-      const updated = announcements.map((item) => {
-        if (item.id === editingId) {
-          return { ...item, ...form };
-        }
-        return item;
-      });
-      setAnnouncements(updated);
-      localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
-      localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
-      setEditingId(null);
-      triggerToast("Absence announcement updated!");
-    } else {
-      // Add new
-      const newItem = {
-        id: Date.now().toString(),
-        ...form,
-      };
-      const updated = [...announcements, newItem];
-      setAnnouncements(updated);
-      localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
-      localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
-      
-      // Append student notification
-      const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
-      const newNotif = {
-        id: Date.now(),
-        message: `Josemarie C. Amparo posted an absence notice until ${form.returnDate}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        date: "Today",
-        type: "absence",
-        unread: true
-      };
-      localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
+    const requestData = {
+      reason: form.reason,
+      startDate: form.startDate,
+      endDate: form.endDate,
+      startTime: form.startTime,
+      returnDate: form.returnDate,
+      details: form.description
+    };
 
-      setIsAdding(false);
-      triggerToast("Absence announcement published!");
+    if (editingId) {
+      // Edit mode (Backend PUT)
+      announcementApi.updateAnnouncement(editingId, requestData)
+        .then(updatedItem => {
+          const mapped = {
+            ...updatedItem,
+            description: updatedItem.details
+          };
+          setAnnouncements(prev => prev.map(item => item.id === editingId ? mapped : item));
+          setEditingId(null);
+          triggerToast("Absence announcement updated!");
+        })
+        .catch(err => {
+          console.error("Failed to update announcement:", err);
+          setFormError(err.response?.data?.message || "Failed to update announcement on server.");
+        });
+    } else {
+      // Add new mode (Backend POST)
+      announcementApi.createAnnouncement(facultyId, requestData)
+        .then(newItem => {
+          const mapped = {
+            ...newItem,
+            description: newItem.details
+          };
+          setAnnouncements(prev => [...prev, mapped]);
+          setIsAdding(false);
+          triggerToast("Absence announcement published!");
+        })
+        .catch(err => {
+          console.error("Failed to create announcement:", err);
+          setFormError(err.response?.data?.message || "Failed to publish announcement to server.");
+        });
     }
 
     // Reset Form
@@ -171,12 +166,16 @@ function AbsenceAnnouncements() {
   };
 
   const handleDeleteAnnouncement = (id) => {
-    const updated = announcements.filter((item) => item.id !== id);
-    setAnnouncements(updated);
-    localStorage.setItem("absenceAnnouncements", JSON.stringify(updated));
-    localStorage.setItem("absenceAnnouncements_teacher@cit.edu", JSON.stringify(updated));
-    triggerToast("Absence announcement deleted.");
-    setDeleteTarget(null);
+    announcementApi.deleteAnnouncement(id)
+      .then(() => {
+        setAnnouncements(prev => prev.filter(item => item.id !== id));
+        triggerToast("Absence announcement deleted.");
+        setDeleteTarget(null);
+      })
+      .catch(err => {
+        console.error("Failed to delete announcement:", err);
+        triggerToast("Failed to delete announcement from server.");
+      });
   };
 
   return (

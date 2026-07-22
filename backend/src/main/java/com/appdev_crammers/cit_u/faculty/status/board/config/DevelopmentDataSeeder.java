@@ -8,9 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.appdev_crammers.cit_u.faculty.status.board.entity.AvailabilityStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.ConsultationScheduleEntity;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatusEntity;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
+import com.appdev_crammers.cit_u.faculty.status.board.repository.ConsultationScheduleRepository;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.FacultyStatusRepository;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 
@@ -19,8 +21,15 @@ public class DevelopmentDataSeeder {
 
     @Bean
     CommandLineRunner seedFaculty(UserAccountRepository users, FacultyStatusRepository statuses,
+                                  ConsultationScheduleRepository consultationSchedules,
+                                  org.springframework.jdbc.core.JdbcTemplate jdbcTemplate,
                                   PasswordEncoder passwordEncoder) {
         return args -> {
+            try {
+                jdbcTemplate.execute("ALTER TABLE consultation_schedules DROP COLUMN day");
+            } catch (Exception e) {
+                // Ignore if the column or table does not exist
+            }
             if (users.findByEmailIgnoreCase("teacher@cit.edu").isPresent()) return;
 
             List<FacultySeed> seeds = List.of(
@@ -36,10 +45,18 @@ public class DevelopmentDataSeeder {
                             AvailabilityStatus.AVAILABLE, "Available for consultation", "CSS Dept. Faculty Room"));
 
             for (FacultySeed seed : seeds) {
-                UserAccount faculty = users.save(new UserAccount(seed.name(), seed.email(),
+                UserAccountEntity faculty = users.save(new UserAccountEntity(seed.name(), seed.email(),
                         passwordEncoder.encode("password123"), UserRole.FACULTY, seed.idNumber(),
                         "College of Computer Studies", null));
-                statuses.save(new FacultyStatus(faculty, seed.status(), seed.description(), seed.room()));
+                statuses.save(new FacultyStatusEntity(faculty, seed.status(), seed.description(), seed.room()));
+
+                if (seed.email().equals("teacher@cit.edu")) {
+                    consultationSchedules.save(new ConsultationScheduleEntity(faculty, "Monday", "Face-to-Face", "09:00 AM", "11:00 AM", "CSS Dept. Faculty Room"));
+                    consultationSchedules.save(new ConsultationScheduleEntity(faculty, "Wednesday", "Online", "09:00 AM", "11:00 AM", "CSS Dept. Faculty Room"));
+                } else if (seed.email().equals("leah.barbaso@cit.edu")) {
+                    consultationSchedules.save(new ConsultationScheduleEntity(faculty, "Tuesday", "Face-to-Face", "01:00 PM", "03:00 PM", "CSS Dept. Faculty Room"));
+                    consultationSchedules.save(new ConsultationScheduleEntity(faculty, "Thursday", "Online", "10:00 AM", "12:00 PM", "MS Teams"));
+                }
             }
         };
     }

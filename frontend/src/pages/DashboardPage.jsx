@@ -16,7 +16,9 @@ import SettingsPage from './SettingsPage';
 import HelpSupportPage from './HelpSupportPage';
 import './DashboardPage.css';
 
-// Mock data seeder removed for backend integration
+import { scheduleApi } from '../api/scheduleApi';
+import { announcementApi } from '../api/announcementApi';
+import { consultationScheduleApi } from '../api/consultationScheduleApi';
 
 function DashboardPage() {
   const location = useLocation();
@@ -34,11 +36,12 @@ function DashboardPage() {
   };
   const isStudent = currentUser.role?.toLowerCase() === 'student';
 
-  // Read status & schedules dynamically from localStorage
-  const currentStatus = localStorage.getItem("currentStatus") || "Available";
-  const currentStatusDescription = localStorage.getItem("currentStatusDescription") || "In Office — NGE, CSS Department";
-  const savedClasses = JSON.parse(localStorage.getItem("classesSchedule") || "[]");
-  const schedulesCount = savedClasses.length;
+  // Live status & schedules counts in states
+  const [currentStatus, setCurrentStatus] = useState("Available");
+  const [currentStatusDescription, setCurrentStatusDescription] = useState("");
+  const [schedulesCount, setSchedulesCount] = useState(0);
+  const [announcementsCount, setAnnouncementsCount] = useState(0);
+  const [announcements, setAnnouncements] = useState([]);
 
   const getStatusLabel = (statusId) => {
     switch (statusId) {
@@ -67,20 +70,7 @@ function DashboardPage() {
 
   const statusDetails = getStatusDetails(currentStatus);
 
-  // Read consultation schedules from localStorage
-  const getConsultations = () => {
-    const saved = localStorage.getItem("consultationSchedules");
-    return saved ? JSON.parse(saved) : [];
-  };
-  const consultations = getConsultations();
-
-  // Read absence announcements from localStorage
-  const getAnnouncements = () => {
-    const saved = localStorage.getItem("absenceAnnouncements");
-    return saved ? JSON.parse(saved) : [];
-  };
-  const announcements = getAnnouncements();
-  const announcementsCount = announcements.length;
+  const [consultations, setConsultations] = useState([]);
 
   // Formatter for breadcrumb date/time: e.g. "Mon, Jun 29 · 3:45 PM"
   const formatDateTime = (date) => {
@@ -110,11 +100,58 @@ function DashboardPage() {
       return;
     }
 
+    const userObj = JSON.parse(loggedInUser);
+
     // Fetch faculty status list from Spring Boot backend to sync the board
     facultyApi.findAll().then(data => {
       localStorage.setItem("facultyList", JSON.stringify(data));
       notifyFacultyStatusUpdated();
     }).catch(err => console.error("Failed to sync faculty status board:", err));
+
+    if (userObj && userObj.id && userObj.role?.toLowerCase() === 'faculty') {
+      // 1. Fetch live status
+      facultyApi.findById(userObj.id)
+        .then(data => {
+          const statusMap = {
+            AVAILABLE: "Available",
+            IN_CLASS: "InClass",
+            BUSY: "Busy",
+            OUT: "Out"
+          };
+          const mappedStatus = statusMap[data.status] || "Available";
+          setCurrentStatus(mappedStatus);
+          setCurrentStatusDescription(data.statusDescription || "");
+          localStorage.setItem("currentStatus", mappedStatus);
+          localStorage.setItem("currentStatusDescription", data.statusDescription || "");
+        })
+        .catch(err => console.error("Failed to load live status:", err));
+
+      // 2. Fetch schedules count
+      scheduleApi.getSchedulesByFaculty(userObj.id)
+        .then(data => {
+          setSchedulesCount(data.length);
+        })
+        .catch(err => console.error("Failed to load schedule count:", err));
+
+      // 3. Fetch announcements count
+      announcementApi.getAnnouncementsByFaculty(userObj.id)
+        .then(data => {
+          const mapped = data.map(item => ({
+            ...item,
+            description: item.details || item.description
+          }));
+          setAnnouncements(mapped);
+          setAnnouncementsCount(mapped.length);
+        })
+        .catch(err => console.error("Failed to load announcements count:", err));
+
+      // 4. Fetch consultation schedules
+      consultationScheduleApi.getSchedulesByFaculty(userObj.id)
+        .then(data => {
+          setConsultations(data);
+        })
+        .catch(err => console.error("Failed to load consultation schedules:", err));
+    }
 
     // Initial set
     setCurrentTime(formatDateTime(new Date()));
