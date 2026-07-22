@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.appdev_crammers.cit_u.faculty.status.board.dto.ClassScheduleRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 
@@ -26,7 +26,7 @@ class ClassScheduleServiceTests {
 
     @Test
     void createsAndFetchesFacultySchedules() {
-        UserAccount faculty = userAccountRepository.save(new UserAccount(
+        UserAccountEntity faculty = userAccountRepository.save(new UserAccountEntity(
                 "Test Faculty",
                 "test.faculty.class@cit.edu",
                 "hashed-password",

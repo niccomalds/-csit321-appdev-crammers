@@ -3,8 +3,8 @@ package com.appdev_crammers.cit_u.faculty.status.board.dto;
 import java.time.Instant;
 
 import com.appdev_crammers.cit_u.faculty.status.board.entity.AvailabilityStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatusEntity;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 
 public record FacultyResponse(
         Long id,
@@ -17,7 +17,7 @@ public record FacultyResponse(
         String room,
         Instant updatedAt) {
 
-    public static FacultyResponse from(UserAccount faculty, FacultyStatus status) {
+    public static FacultyResponse from(UserAccountEntity faculty, FacultyStatusEntity status) {
         return new FacultyResponse(faculty.getId(), faculty.getFullName(), faculty.getEmail(),
                 faculty.getDepartment(), faculty.getIdNumber(), status.getStatus(),
                 status.getDescription(), status.getRoom(), status.getUpdatedAt());

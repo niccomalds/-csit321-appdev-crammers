@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "faculty_statuses")
-public class FacultyStatus {
+public class FacultyStatusEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class FacultyStatus {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "faculty_id", nullable = false, unique = true)
-    private UserAccount faculty;
+    private UserAccountEntity faculty;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -39,10 +39,10 @@ public class FacultyStatus {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    protected FacultyStatus() {
+    protected FacultyStatusEntity() {
     }
 
-    public FacultyStatus(UserAccount faculty, AvailabilityStatus status, String description, String room) {
+    public FacultyStatusEntity(UserAccountEntity faculty, AvailabilityStatus status, String description, String room) {
         this.faculty = faculty;
         this.status = status;
         this.description = description;
@@ -51,7 +51,7 @@ public class FacultyStatus {
     }
 
     public Long getId() { return id; }
-    public UserAccount getFaculty() { return faculty; }
+    public UserAccountEntity getFaculty() { return faculty; }
     public AvailabilityStatus getStatus() { return status; }
     public String getDescription() { return description; }
     public String getRoom() { return room; }

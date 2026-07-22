@@ -5,6 +5,7 @@ import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
 import ugangImg from '../assets/images/ugang.jpg';
 import vonImg from '../assets/images/von.jpg';
+import { announcementApi } from '../api/announcementApi';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
@@ -28,38 +29,17 @@ function StudentFacultyAbsences() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const list = localStorage.getItem("facultyList");
-    if (!list) return;
-
-    const faculties = JSON.parse(list);
-    const combinedAbsences = [];
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    faculties.forEach((f) => {
-      let facultyAnn = [];
-      const email = f.email;
-      if (email === "teacher@cit.edu") {
-        const saved = localStorage.getItem("absenceAnnouncements");
-        facultyAnn = saved ? JSON.parse(saved) : [];
-      } else {
-        const saved = localStorage.getItem(`absenceAnnouncements_${email}`);
-        facultyAnn = saved ? JSON.parse(saved) : [];
-      }
-
-      facultyAnn.forEach((ann) => {
-        // Only include active or upcoming absences
-        if (ann.endDate >= todayStr) {
-          combinedAbsences.push({
-            ...ann,
-            facultyName: f.fullName,
-            facultyEmail: f.email,
-            facultyDept: f.department
-          });
-        }
+    announcementApi.getActiveAnnouncements()
+      .then(data => {
+        const mapped = data.map(item => ({
+          ...item,
+          description: item.details || item.description
+        }));
+        setAbsences(mapped);
+      })
+      .catch(err => {
+        console.error("Failed to load active announcements:", err);
       });
-    });
-
-    setAbsences(combinedAbsences);
   }, []);
 
   const getAbsenceStatus = (item) => {

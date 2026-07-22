@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appdev_crammers.cit_u.faculty.status.board.dto.AbsenceAnnouncementRequest;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.AbsenceAnnouncementResponse;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
 import com.appdev_crammers.cit_u.faculty.status.board.service.AbsenceAnnouncementService;
@@ -41,7 +42,7 @@ public class AbsenceAnnouncementController {
     public AbsenceAnnouncementResponse createAnnouncement(
             @RequestParam Long facultyId,
             @Valid @RequestBody AbsenceAnnouncementRequest request) {
-        UserAccount faculty = users.findById(facultyId)
+        UserAccountEntity faculty = users.findById(facultyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty member not found"));
         return absenceAnnouncementService.createAnnouncement(faculty, request);
     }
@@ -59,6 +60,13 @@ public class AbsenceAnnouncementController {
     @PatchMapping("/{id}/deactivate")
     public AbsenceAnnouncementResponse deactivateAnnouncement(@PathVariable Long id) {
         return absenceAnnouncementService.deactivateAnnouncement(id);
+    }
+
+    @PutMapping("/{id}")
+    public AbsenceAnnouncementResponse updateAnnouncement(
+            @PathVariable Long id,
+            @Valid @RequestBody AbsenceAnnouncementRequest request) {
+        return absenceAnnouncementService.updateAnnouncement(id, request);
     }
 
     @DeleteMapping("/{id}")

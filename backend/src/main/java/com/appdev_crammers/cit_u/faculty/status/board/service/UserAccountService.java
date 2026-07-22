@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.LoginRequest;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.RegisterRequest;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.UserResponse;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ConflictException;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
@@ -37,7 +37,7 @@ public class UserAccountService {
             throw new ConflictException("An account with this ID number already exists");
         }
 
-        UserAccount user = new UserAccount(
+        UserAccountEntity user = new UserAccountEntity(
                 request.fullName().trim(), request.email(), passwordEncoder.encode(request.password()),
                 UserRole.STUDENT, request.idNumber().trim(), null, request.yearCourse().trim());
         return UserResponse.from(users.save(user));
@@ -45,7 +45,7 @@ public class UserAccountService {
 
     @Transactional(readOnly = true)
     public UserResponse login(LoginRequest request) {
-        UserAccount user = users.findByEmailIgnoreCase(request.email())
+        UserAccountEntity user = users.findByEmailIgnoreCase(request.email())
                 .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw new UnauthorizedException("Invalid email or password");
@@ -55,7 +55,7 @@ public class UserAccountService {
 
     @Transactional
     public void delete(Long id) {
-        UserAccount user = users.findById(id)
+        UserAccountEntity user = users.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
         
         if (user.getRole() == UserRole.FACULTY) {

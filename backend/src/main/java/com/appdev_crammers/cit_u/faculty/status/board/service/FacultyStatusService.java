@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.appdev_crammers.cit_u.faculty.status.board.dto.FacultyResponse;
 import com.appdev_crammers.cit_u.faculty.status.board.dto.UpdateStatusRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatus;
-import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccount;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.FacultyStatusEntity;
+import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserRole;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.FacultyStatusRepository;
@@ -38,22 +38,22 @@ public class FacultyStatusService {
 
     @Transactional(readOnly = true)
     public FacultyResponse findById(Long id) {
-        UserAccount faculty = findFaculty(id);
+        UserAccountEntity faculty = findFaculty(id);
         return FacultyResponse.from(faculty, findStatus(id));
     }
 
     @Transactional
     public FacultyResponse updateStatus(Long id, UpdateStatusRequest request) {
-        UserAccount faculty = findFaculty(id);
-        FacultyStatus status = findStatus(id);
+        UserAccountEntity faculty = findFaculty(id);
+        FacultyStatusEntity status = findStatus(id);
         status.update(request.status(), request.description(), request.room());
         FacultyResponse response = FacultyResponse.from(faculty, statuses.save(status));
         messaging.convertAndSend("/topic/faculty-status", response);
         return response;
     }
 
-    private UserAccount findFaculty(Long id) {
-        UserAccount user = users.findById(id)
+    private UserAccountEntity findFaculty(Long id) {
+        UserAccountEntity user = users.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty member not found"));
         if (user.getRole() != UserRole.FACULTY) {
             throw new ResourceNotFoundException("Faculty member not found");
@@ -61,7 +61,7 @@ public class FacultyStatusService {
         return user;
     }
 
-    private FacultyStatus findStatus(Long facultyId) {
+    private FacultyStatusEntity findStatus(Long facultyId) {
         return statuses.findByFacultyId(facultyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty status not found"));
     }

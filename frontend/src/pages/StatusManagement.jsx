@@ -3,6 +3,7 @@ import "./StatusManagement.css";
 import { ConfirmDialog, InlineFeedback } from "../components/Feedback";
 import { notifyFacultyStatusUpdated } from "../hooks/useFacultyList";
 import { facultyApi } from "../api/facultyApi";
+import { scheduleApi } from "../api/scheduleApi";
 
 import josemarieImg from "../assets/images/josemarie.jpg";
 import leahImg from "../assets/images/leah.jpg";
@@ -18,24 +19,87 @@ const facultyImages = {
   "von.godinez@cit.edu": vonImg,
 };
 
+const convertTo24Hour = (timeStr) => {
+  if (!timeStr) return "00:00";
+  const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)?$/);
+  if (!match) {
+    if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
+    return "00:00";
+  }
+  let [_, hours, minutes, ampm] = match;
+  hours = parseInt(hours, 10);
+  if (ampm) {
+    const isPM = ampm.toUpperCase() === "PM";
+    if (isPM && hours < 12) hours += 12;
+    if (!isPM && hours === 12) hours = 0;
+  }
+  return `${hours.toString().padStart(2, '0')}:${minutes}`;
+};
+
+const convertTo12Hour = (timeStr) => {
+  if (!timeStr) return "";
+  const parts = timeStr.split(':');
+  if (parts.length < 2) return timeStr;
+  let hours = parseInt(parts[0], 10);
+  const minutes = parts[1];
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+};
+
 function StatusManagement() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const facultyName = currentUser?.fullName || "Josemarie C. Amparo";
   const profileImg = facultyImages[currentUser?.email] || josemarieImg;
+  const facultyId = currentUser?.id;
 
-  // Read initial states from localStorage if available
-  const [selectedStatus, setSelectedStatus] = useState(() => {
-    return localStorage.getItem("currentStatus") || "Available";
-  });
+  const [selectedStatus, setSelectedStatus] = useState("Available");
+  const [description, setDescription] = useState("");
+  const [classes, setClasses] = useState([]);
 
-  const [description, setDescription] = useState(() => {
-    return localStorage.getItem("currentStatusDescription") || "In Office — NGE, CSS Department";
-  });
+  useEffect(() => {
+    if (facultyId) {
+      // 1. Fetch live status
+      facultyApi.findById(facultyId)
+        .then(data => {
+          const statusMap = {
+            AVAILABLE: "Available",
+            IN_CLASS: "InClass",
+            BUSY: "Busy",
+            OUT: "Out"
+          };
+          setSelectedStatus(statusMap[data.status] || "Available");
+          setDescription(data.statusDescription || "");
+        })
+        .catch(err => {
+          console.error("Failed to load status from server:", err);
+        });
 
-  const [classes, setClasses] = useState(() => {
-    const saved = localStorage.getItem("classesSchedule");
-    return saved ? JSON.parse(saved) : [];
-  });
+      // 2. Fetch schedules
+      scheduleApi.getSchedulesByFaculty(facultyId)
+        .then(data => {
+          const mapped = data.map(item => {
+            const match = item.subjectName.match(/^(.*?)\s*\((.*?)\)$/);
+            const subject = match ? match[1] : item.subjectName;
+            const section = match ? match[2] : "";
+            return {
+              id: item.id,
+              subject,
+              section,
+              room: item.room,
+              startTime: convertTo12Hour(item.startTime),
+              endTime: convertTo12Hour(item.endTime),
+              completed: false
+            };
+          });
+          setClasses(mapped);
+        })
+        .catch(err => {
+          console.error("Failed to load schedules:", err);
+        });
+    }
+  }, [facultyId]);
 
   // Form states
   const [isAdding, setIsAdding] = useState(false);
@@ -170,35 +234,74 @@ function StatusManagement() {
   const handleSaveClass = (e) => {
     e.preventDefault();
     if (!form.subject || !form.section || !form.room || !form.startTime || !form.endTime) {
-      setFormError("Please complete every class schedule field before saving.");
+      setFormError("All class schedule fields are required.");
+      return;
+    }
+    if (!form.startTime.includes(":") || !form.endTime.includes(":")) {
+      setFormError("Time format must be valid (e.g. 07:30 AM)");
       return;
     }
     setFormError("");
 
+    const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+    const dayOfWeek = days[new Date().getDay()];
+
+    const requestData = {
+      subjectName: `${form.subject} (${form.section})`,
+      dayOfWeek: dayOfWeek,
+      startTime: convertTo24Hour(form.startTime),
+      endTime: convertTo24Hour(form.endTime),
+      room: form.room
+    };
+
     if (editingId) {
-      // Edit mode
-      const updated = classes.map((item) => {
-        if (item.id === editingId) {
-          return { ...item, ...form };
-        }
-        return item;
-      });
-      setClasses(updated);
-      localStorage.setItem("classesSchedule", JSON.stringify(updated));
-      setEditingId(null);
-      triggerToast("Class schedule updated!");
+      // Edit mode (Backend PUT)
+      scheduleApi.updateSchedule(editingId, requestData)
+        .then(updatedItem => {
+          const match = updatedItem.subjectName.match(/^(.*?)\s*\((.*?)\)$/);
+          const subject = match ? match[1] : updatedItem.subjectName;
+          const section = match ? match[2] : "";
+          const mapped = {
+            id: updatedItem.id,
+            subject,
+            section,
+            room: updatedItem.room,
+            startTime: convertTo12Hour(updatedItem.startTime),
+            endTime: convertTo12Hour(updatedItem.endTime),
+            completed: false
+          };
+          setClasses(prev => prev.map(item => item.id === editingId ? mapped : item));
+          setEditingId(null);
+          triggerToast("Class schedule updated!");
+        })
+        .catch(err => {
+          console.error("Failed to update class schedule:", err);
+          setFormError(err.response?.data?.message || "Failed to update schedule on server.");
+        });
     } else {
-      // Add mode
-      const newClass = {
-        id: Date.now(),
-        ...form,
-        completed: false,
-      };
-      const updated = [...classes, newClass];
-      setClasses(updated);
-      localStorage.setItem("classesSchedule", JSON.stringify(updated));
-      setIsAdding(false);
-      triggerToast("Class schedule added!");
+      // Add mode (Backend POST)
+      scheduleApi.createSchedule(facultyId, requestData)
+        .then(newItem => {
+          const match = newItem.subjectName.match(/^(.*?)\s*\((.*?)\)$/);
+          const subject = match ? match[1] : newItem.subjectName;
+          const section = match ? match[2] : "";
+          const mapped = {
+            id: newItem.id,
+            subject,
+            section,
+            room: newItem.room,
+            startTime: convertTo12Hour(newItem.startTime),
+            endTime: convertTo12Hour(newItem.endTime),
+            completed: false
+          };
+          setClasses(prev => [...prev, mapped]);
+          setIsAdding(false);
+          triggerToast("Class schedule added!");
+        })
+        .catch(err => {
+          console.error("Failed to add class schedule:", err);
+          setFormError(err.response?.data?.message || "Failed to save schedule to server.");
+        });
     }
 
     // Reset form
@@ -225,11 +328,16 @@ function StatusManagement() {
   };
 
   const handleDeleteClass = (id) => {
-    const updated = classes.filter((item) => item.id !== id);
-    setClasses(updated);
-    localStorage.setItem("classesSchedule", JSON.stringify(updated));
-    triggerToast("Class schedule deleted.");
-    setDeleteTarget(null);
+    scheduleApi.deleteSchedule(id)
+      .then(() => {
+        setClasses(prev => prev.filter((item) => item.id !== id));
+        triggerToast("Class schedule deleted.");
+        setDeleteTarget(null);
+      })
+      .catch(err => {
+        console.error("Failed to delete schedule:", err);
+        triggerToast("Failed to delete schedule from server.");
+      });
   };
 
   const handleToggleComplete = (id) => {

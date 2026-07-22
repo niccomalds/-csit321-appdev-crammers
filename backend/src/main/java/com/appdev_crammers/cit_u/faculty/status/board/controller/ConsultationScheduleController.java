@@ -14,51 +14,51 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appdev_crammers.cit_u.faculty.status.board.dto.ClassScheduleRequest;
-import com.appdev_crammers.cit_u.faculty.status.board.dto.ClassScheduleResponse;
+import com.appdev_crammers.cit_u.faculty.status.board.dto.ConsultationScheduleRequest;
+import com.appdev_crammers.cit_u.faculty.status.board.dto.ConsultationScheduleResponse;
 import com.appdev_crammers.cit_u.faculty.status.board.entity.UserAccountEntity;
 import com.appdev_crammers.cit_u.faculty.status.board.exception.ResourceNotFoundException;
 import com.appdev_crammers.cit_u.faculty.status.board.repository.UserAccountRepository;
-import com.appdev_crammers.cit_u.faculty.status.board.service.ClassScheduleService;
+import com.appdev_crammers.cit_u.faculty.status.board.service.ConsultationScheduleService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/schedules")
-public class ClassScheduleController {
+@RequestMapping("/api/consultations")
+public class ConsultationScheduleController {
 
-    private final ClassScheduleService classScheduleService;
+    private final ConsultationScheduleService consultationScheduleService;
     private final UserAccountRepository users;
 
-    public ClassScheduleController(ClassScheduleService classScheduleService, UserAccountRepository users) {
-        this.classScheduleService = classScheduleService;
+    public ConsultationScheduleController(ConsultationScheduleService consultationScheduleService, UserAccountRepository users) {
+        this.consultationScheduleService = consultationScheduleService;
         this.users = users;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ClassScheduleResponse createSchedule(
+    public ConsultationScheduleResponse createSchedule(
             @RequestParam Long facultyId,
-            @Valid @RequestBody ClassScheduleRequest request) {
+            @Valid @RequestBody ConsultationScheduleRequest request) {
         UserAccountEntity faculty = users.findById(facultyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty member not found"));
-        return classScheduleService.createSchedule(faculty, request);
+        return consultationScheduleService.createSchedule(faculty, request);
     }
 
     @GetMapping("/faculty/{facultyId}")
-    public List<ClassScheduleResponse> getSchedulesByFaculty(@PathVariable Long facultyId) {
-        return classScheduleService.getSchedulesByFaculty(facultyId);
+    public List<ConsultationScheduleResponse> getSchedulesByFaculty(@PathVariable Long facultyId) {
+        return consultationScheduleService.getSchedulesByFaculty(facultyId);
     }
 
     @PutMapping("/{id}")
-    public ClassScheduleResponse updateSchedule(@PathVariable Long id,
-                                               @Valid @RequestBody ClassScheduleRequest request) {
-        return classScheduleService.updateSchedule(id, request);
+    public ConsultationScheduleResponse updateSchedule(@PathVariable Long id,
+                                                       @Valid @RequestBody ConsultationScheduleRequest request) {
+        return consultationScheduleService.updateSchedule(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSchedule(@PathVariable Long id) {
-        classScheduleService.deleteSchedule(id);
+        consultationScheduleService.deleteSchedule(id);
     }
 }

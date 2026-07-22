@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user_accounts")
-public class UserAccount {
+public class UserAccountEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +44,10 @@ public class UserAccount {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    protected UserAccount() {
+    protected UserAccountEntity() {
     }
 
-    public UserAccount(String fullName, String email, String passwordHash, UserRole role,
+    public UserAccountEntity(String fullName, String email, String passwordHash, UserRole role,
                        String idNumber, String department, String yearCourse) {
         this.fullName = fullName;
         this.email = email.toLowerCase().trim();

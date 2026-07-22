@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './StudentFacultyStatus.css';
 import { useFacultyList } from '../hooks/useFacultyList';
 import josemarieImg from '../assets/images/josemarie.jpg';
@@ -6,6 +6,7 @@ import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
 import ugangImg from '../assets/images/ugang.jpg';
 import vonImg from '../assets/images/von.jpg';
+import { scheduleApi } from '../api/scheduleApi';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
@@ -24,6 +25,18 @@ const getFacultyAvatar = (email) => {
   }
 };
 
+const convertTo12Hour = (timeStr) => {
+  if (!timeStr) return "";
+  const parts = timeStr.split(':');
+  if (parts.length < 2) return timeStr;
+  let hours = parseInt(parts[0], 10);
+  const minutes = parts[1];
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+};
+
 function StudentFacultyStatus() {
   const faculty = useFacultyList();
   const [search, setSearch] = useState("");
@@ -31,13 +44,35 @@ function StudentFacultyStatus() {
   const [selectedFacultyId, setSelectedFacultyId] = useState(() => faculty[0]?.id || null);
   const selectedFaculty = faculty.find((item) => item.id === selectedFacultyId) || faculty[0] || null;
 
-  const facultyClasses = (() => {
-    if (!selectedFaculty) return [];
-    const key = selectedFaculty.email === "teacher@cit.edu"
-      ? "classesSchedule"
-      : `classesSchedule_${selectedFaculty.email}`;
-    return JSON.parse(localStorage.getItem(key) || "[]");
-  })();
+  const [facultyClasses, setFacultyClasses] = useState([]);
+
+  useEffect(() => {
+    if (selectedFaculty && selectedFaculty.id) {
+      scheduleApi.getSchedulesByFaculty(selectedFaculty.id)
+        .then(data => {
+          const mapped = data.map(item => {
+            const match = item.subjectName.match(/^(.*?)\s*\((.*?)\)$/);
+            const subject = match ? match[1] : item.subjectName;
+            const section = match ? match[2] : "";
+            return {
+              id: item.id,
+              subject,
+              section,
+              room: item.room,
+              startTime: convertTo12Hour(item.startTime),
+              endTime: convertTo12Hour(item.endTime)
+            };
+          });
+          setFacultyClasses(mapped);
+        })
+        .catch(err => {
+          console.error("Failed to fetch faculty schedules:", err);
+          setFacultyClasses([]);
+        });
+    } else {
+      setFacultyClasses([]);
+    }
+  }, [selectedFacultyId, selectedFaculty]);
 
   const getStatusBadgeClass = (status) => {
     switch (status) {

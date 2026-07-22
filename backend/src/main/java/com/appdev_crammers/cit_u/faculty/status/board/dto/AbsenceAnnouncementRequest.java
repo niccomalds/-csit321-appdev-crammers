@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Size;
 public record AbsenceAnnouncementRequest(
         @NotBlank @Size(max = 120) String reason,
         @NotNull LocalDate startDate,
+        @NotNull LocalDate endDate,
+        @NotBlank @Size(max = 40) String startTime,
         @NotNull LocalDate returnDate,
         @NotBlank @Size(max = 1000) String details) {
 }
