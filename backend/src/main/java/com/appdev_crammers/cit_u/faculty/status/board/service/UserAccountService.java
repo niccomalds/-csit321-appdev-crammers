@@ -38,8 +38,15 @@ public class UserAccountService {
         }
 
         UserAccountEntity user = new UserAccountEntity(
-                request.fullName().trim(), request.email(), passwordEncoder.encode(request.password()),
-                UserRole.STUDENT, request.idNumber().trim(), null, request.yearCourse().trim());
+                request.fullName().trim(),
+                request.email(),
+                passwordEncoder.encode(request.password()),
+                UserRole.STUDENT,
+                request.idNumber().trim(),
+                request.department().trim(),
+                request.course().trim(),
+                request.year().trim()
+        );
         return UserResponse.from(users.save(user));
     }
 

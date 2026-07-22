@@ -13,6 +13,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/status" element={<DashboardPage />} />
         <Route path="/schedule" element={<DashboardPage />} />
+        <Route path="/class-schedule" element={<DashboardPage />} />
         <Route path="/absence" element={<DashboardPage />} />
         <Route path="/directory" element={<DashboardPage />} />
         <Route path="/notifications" element={<DashboardPage />} />

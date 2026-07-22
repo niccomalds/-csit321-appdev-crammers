@@ -14,7 +14,7 @@ function HelpSupportPage() {
   const faqs = [
     {
       q: "How do I check if an instructor is available?",
-      a: "Navigate to the 'Faculty Status' tab in the left sidebar menu. This lists all instructors with their real-time statuses (Available, Class Ongoing, In a Meeting, Out of Office). Clicking on any instructor displays their daily schedule timeline details."
+      a: "Navigate to the 'Faculty Status' tab in the left sidebar menu. This lists all instructors with their real-time statuses (Available, Class Ongoing, In a Meeting, Do Not Disturb). Clicking on any instructor displays their daily schedule timeline details."
     },
     {
       q: "How can I check the consultation schedules of teachers?",

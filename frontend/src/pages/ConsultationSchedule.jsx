@@ -127,19 +127,6 @@ function ConsultationSchedule() {
       consultationScheduleApi.createSchedule(facultyId, requestData)
         .then(newItem => {
           setSchedules(prev => [...prev, newItem]);
-
-          // Append student notification
-          const notifications = JSON.parse(localStorage.getItem("studentNotifications") || "[]");
-          const newNotif = {
-            id: Date.now(),
-            message: `${facultyName} updated consultation schedule`,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            date: "Today",
-            type: "schedule",
-            unread: true
-          };
-          localStorage.setItem("studentNotifications", JSON.stringify([newNotif, ...notifications]));
-
           setIsAdding(false);
           triggerToast("Consultation schedule added!");
         })

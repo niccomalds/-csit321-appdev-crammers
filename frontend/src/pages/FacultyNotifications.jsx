@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import './StudentNotifications.css';
+import { useState, useEffect } from 'react';
+import './FacultyNotifications.css';
 import { notificationApi } from '../api/notificationApi';
 
-function StudentNotifications() {
+function FacultyNotifications() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const [notifications, setNotifications] = useState([]);
   const [search, setSearch] = useState("");
@@ -44,9 +44,9 @@ function StudentNotifications() {
         return (
           <div className="notif-circle-icon absence-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </div>
         );
@@ -73,7 +73,6 @@ function StudentNotifications() {
     }
   };
 
-  // Filter notifications
   const filteredNotifications = notifications.filter((notif) => {
     const matchesSearch = notif.message.toLowerCase().includes(search.toLowerCase());
     const matchesType = filterType === "All" || notif.type === filterType;
@@ -85,7 +84,7 @@ function StudentNotifications() {
   };
 
   return (
-    <div className="student-notifications-container">
+    <div className="faculty-notifications-container">
       {/* Search and Action Bar */}
       <div className="notif-filter-bar">
         <div className="search-box-wrapper">
@@ -95,7 +94,7 @@ function StudentNotifications() {
           </svg>
           <input 
             type="text" 
-            placeholder="Search notification messages..." 
+            placeholder="Search notification logs..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="search-input-field"
@@ -117,10 +116,10 @@ function StudentNotifications() {
           <h4 className="sidebar-group-title">Categories</h4>
           <div className="sidebar-filter-list">
             {[
-              { id: "All", label: "All Notifications" },
-              { id: "status", label: "Status Changes" },
-              { id: "absence", label: "Absences" },
-              { id: "schedule", label: "Consultation Schedules" },
+              { id: "All", label: "All Logs" },
+              { id: "status", label: "Status & Broadcasts" },
+              { id: "absence", label: "Absences & Leaves" },
+              { id: "schedule", label: "Consultation & Classes" },
             ].map((cat) => (
               <button
                 key={cat.id}
@@ -163,7 +162,7 @@ function StudentNotifications() {
           ) : (
             <div className="empty-search-state">
               <span className="empty-search-icon">🔔</span>
-              <p className="empty-search-title">No notifications found</p>
+              <p className="empty-search-title">No logs found</p>
               <p className="empty-search-text">Your notifications log is clear or matches no results.</p>
             </div>
           )}
@@ -173,4 +172,4 @@ function StudentNotifications() {
   );
 }
 
-export default StudentNotifications;
+export default FacultyNotifications;

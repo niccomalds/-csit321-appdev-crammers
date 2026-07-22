@@ -149,6 +149,14 @@ body {
   flex: 1;
 }
 
+.register-form-group-year {
+  flex: 0.35;
+}
+
+.register-form-group-course {
+  flex: 1;
+}
+
 .register-form-group label {
   display: block;
   text-align: left;
@@ -159,7 +167,8 @@ body {
   margin-bottom: 2px;
 }
 
-.register-form-group input {
+.register-form-group input,
+.register-form-group select {
   padding: 10px 14px;
   border: 1px solid #e8e3df;
   border-radius: 6px;
@@ -171,7 +180,8 @@ body {
   width: 100%;
 }
 
-.register-form-group input:focus {
+.register-form-group input:focus,
+.register-form-group select:focus {
   border-color: #7a1f2b;
   box-shadow: 0 0 0 4px rgba(122, 31, 43, 0.05);
   background: #ffffff;

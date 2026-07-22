@@ -33,6 +33,7 @@ class ClassScheduleServiceTests {
                 UserRole.FACULTY,
                 "FAC-TEST-002",
                 "College of Computer Studies",
+                null,
                 null));
 
         ClassScheduleRequest request = new ClassScheduleRequest(

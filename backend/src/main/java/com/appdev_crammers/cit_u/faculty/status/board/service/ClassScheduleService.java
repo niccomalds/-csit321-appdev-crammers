@@ -17,9 +17,11 @@ import com.appdev_crammers.cit_u.faculty.status.board.repository.ClassScheduleRe
 public class ClassScheduleService {
 
     private final ClassScheduleRepository schedules;
+    private final NotificationService notificationService;
 
-    public ClassScheduleService(ClassScheduleRepository schedules) {
+    public ClassScheduleService(ClassScheduleRepository schedules, NotificationService notificationService) {
         this.schedules = schedules;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -36,7 +38,16 @@ public class ClassScheduleService {
                 request.endTime(),
                 request.room().trim());
 
-        return ClassScheduleResponse.from(schedules.save(schedule));
+        ClassScheduleEntity saved = schedules.save(schedule);
+
+        // Trigger notifications
+        String studentMsg = faculty.getFullName() + " added class schedule: " + saved.getSubjectName() + " at " + saved.getRoom();
+        String facultyMsg = "Class schedule added: " + saved.getSubjectName() + " at " + saved.getRoom();
+        
+        notificationService.createNotificationsForRole(UserRole.STUDENT, studentMsg, "schedule");
+        notificationService.createNotification(faculty, facultyMsg, "schedule");
+
+        return ClassScheduleResponse.from(saved);
     }
 
     @Transactional(readOnly = true)

@@ -47,7 +47,7 @@ public class DevelopmentDataSeeder {
             for (FacultySeed seed : seeds) {
                 UserAccountEntity faculty = users.save(new UserAccountEntity(seed.name(), seed.email(),
                         passwordEncoder.encode("password123"), UserRole.FACULTY, seed.idNumber(),
-                        "College of Computer Studies", null));
+                        "College of Computer Studies", null, null));
                 statuses.save(new FacultyStatusEntity(faculty, seed.status(), seed.description(), seed.room()));
 
                 if (seed.email().equals("teacher@cit.edu")) {

@@ -32,6 +32,7 @@ class ConsultationScheduleServiceTests {
                 UserRole.FACULTY,
                 "FAC-TEST-003",
                 "College of Computer Studies",
+                null,
                 null));
 
         ConsultationScheduleRequest request = new ConsultationScheduleRequest(

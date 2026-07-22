@@ -6,6 +6,8 @@ import Sidebar from '../components/Sidebar';
 import StatusManagement from './StatusManagement';
 import ConsultationSchedule from './ConsultationSchedule';
 import AbsenceAnnouncements from './AbsenceAnnouncements';
+import ClassSchedules from './ClassSchedules';
+import FacultyNotifications from './FacultyNotifications';
 import StudentDashboard from './StudentDashboard';
 import StudentFacultyStatus from './StudentFacultyStatus';
 import StudentConsultationSchedule from './StudentConsultationSchedule';
@@ -48,7 +50,7 @@ function DashboardPage() {
       case "Available": return "Available";
       case "InClass": return "In Class";
       case "Busy": return "Busy";
-      case "Out": return "Out";
+      case "Out": return "Do Not Disturb";
       default: return "Available";
     }
   };
@@ -112,13 +114,7 @@ function DashboardPage() {
       // 1. Fetch live status
       facultyApi.findById(userObj.id)
         .then(data => {
-          const statusMap = {
-            AVAILABLE: "Available",
-            IN_CLASS: "InClass",
-            BUSY: "Busy",
-            OUT: "Out"
-          };
-          const mappedStatus = statusMap[data.status] || "Available";
+          const mappedStatus = data.status || "Available";
           setCurrentStatus(mappedStatus);
           setCurrentStatusDescription(data.statusDescription || "");
           localStorage.setItem("currentStatus", mappedStatus);
@@ -188,6 +184,7 @@ function DashboardPage() {
     switch (tab) {
       case 'status': return isStudent ? 'Faculty Status' : 'Status Management';
       case 'schedule': return 'Consultation Schedule';
+      case 'class-schedule': return 'Class Schedules';
       case 'absence': return isStudent ? 'Faculty Absences' : 'Absence Announcements';
       case 'directory': return 'Faculty Directory';
       case 'notifications': return 'Notifications';
@@ -413,10 +410,14 @@ function DashboardPage() {
               </>
             ) : activeTab === 'status' ? (
               <StatusManagement />
+            ) : activeTab === 'class-schedule' ? (
+              <ClassSchedules />
             ) : activeTab === 'schedule' ? (
               <ConsultationSchedule />
             ) : activeTab === 'absence' ? (
               <AbsenceAnnouncements />
+            ) : activeTab === 'notifications' ? (
+              <FacultyNotifications />
             ) : activeTab === 'settings' ? (
               <SettingsPage />
             ) : activeTab === 'help' ? (

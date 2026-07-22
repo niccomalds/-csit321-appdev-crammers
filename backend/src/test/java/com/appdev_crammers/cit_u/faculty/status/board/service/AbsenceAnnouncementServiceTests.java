@@ -33,6 +33,7 @@ class AbsenceAnnouncementServiceTests {
                 UserRole.FACULTY,
                 "FAC-TEST-001",
                 "College of Computer Studies",
+                null,
                 null));
 
         AbsenceAnnouncementRequest request = new AbsenceAnnouncementRequest(
