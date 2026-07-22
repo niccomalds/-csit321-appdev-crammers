@@ -41,12 +41,28 @@ function RegisterPage() {
       return;
     }
 
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
       await authApi.register(formData);
       navigate("/login");
     } catch (err) {
-      const msg = err.response?.data?.message || "Registration failed. Please check your inputs.";
-      setError(msg);
+      const fieldErrors = err.response?.data?.fieldErrors;
+      if (fieldErrors && Object.keys(fieldErrors).length > 0) {
+        const errorMessages = Object.entries(fieldErrors)
+          .map(([field, msg]) => {
+            const formattedField = field.replace(/([A-Z])/g, ' $1').trim();
+            return `${formattedField.charAt(0).toUpperCase() + formattedField.slice(1)}: ${msg}`;
+          })
+          .join(", ");
+        setError(errorMessages);
+      } else {
+        const msg = err.response?.data?.message || "Registration failed. Please check your inputs.";
+        setError(msg);
+      }
     }
   };
 
@@ -137,6 +153,7 @@ function RegisterPage() {
                     placeholder="********" 
                     value={formData.password}
                     onChange={handleChange}
+                    minLength={8}
                     required 
                   />
                 </div>
