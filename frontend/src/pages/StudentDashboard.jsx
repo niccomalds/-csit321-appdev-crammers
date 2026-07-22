@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './StudentDashboard.css';
 import { useFacultyList } from '../hooks/useFacultyList';
+import { notificationApi } from '../api/notificationApi';
+import { announcementApi } from '../api/announcementApi';
 import josemarieImg from '../assets/images/josemarie.jpg';
 import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
@@ -28,8 +30,23 @@ const getFacultyAvatar = (email) => {
 function StudentDashboard() {
   const navigate = useNavigate();
   const faculty = useFacultyList();
-  const [notifications] = useState(() => JSON.parse(localStorage.getItem("studentNotifications") || "[]"));
+  const [notifications, setNotifications] = useState([]);
+  const [leaveAnnouncements, setLeaveAnnouncements] = useState([]);
   const [currentUser] = useState(() => JSON.parse(localStorage.getItem("currentUser") || "null"));
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      notificationApi.getNotificationsByUser(currentUser.id)
+        .then(data => setNotifications(data))
+        .catch(err => console.error("Failed to load notifications:", err));
+    }
+  }, [currentUser?.id]);
+
+  useEffect(() => {
+    announcementApi.getActiveAnnouncements()
+      .then(data => setLeaveAnnouncements(data))
+      .catch(err => console.error("Failed to load active announcements:", err));
+  }, []);
 
   const getFirstName = (fullName) => {
     if (!fullName) return "Student";
@@ -41,9 +58,6 @@ function StudentDashboard() {
   const meetingCount = faculty.filter(f => f.status === 'Busy').length;
   const classCount = faculty.filter(f => f.status === 'InClass').length;
   const outCount = faculty.filter(f => f.status === 'Out').length;
-
-  // Filter faculty on leave (status === 'Out')
-  const leaveFaculty = faculty.filter(f => f.status === 'Out');
 
   // Format Return Date helper
   const getReturnDateForFaculty = (email) => {
@@ -166,7 +180,7 @@ function StudentDashboard() {
               </svg>
             </div>
           </div>
-          <span className="metric-label text-meeting">In a Meeting</span>
+          <span className="metric-label text-meeting">Busy</span>
         </div>
 
         {/* Card 3: Class Ongoing */}
@@ -182,25 +196,24 @@ function StudentDashboard() {
           <span className="metric-label text-class">Class Ongoing</span>
         </div>
 
-        {/* Card 4: Out of Office */}
+        {/* Card 4: Do Not Disturb */}
         <div className="student-metric-card border-out">
           <div className="metric-header">
             <span className="metric-number text-out">{outCount}</span>
             <div className="metric-icon-badge bg-out">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
+                <circle cx="12" cy="12" r="10" />
+                <line x1="8" y1="12" x2="16" y2="12" />
               </svg>
             </div>
           </div>
-          <span className="metric-label text-out">Out of Office</span>
+          <span className="metric-label text-out">Do Not Disturb</span>
         </div>
       </div>
 
       {/* Split Panels */}
       <div className="student-panels-grid">
-        
+
         {/* Left: Recent Notifications */}
         <div className="student-panel-card">
           <div className="student-panel-header">
@@ -238,22 +251,22 @@ function StudentDashboard() {
             <button className="student-panel-link" onClick={() => navigate('/absence')}>View all</button>
           </div>
           <div className="student-panel-content">
-            {leaveFaculty.length > 0 ? (
+            {leaveAnnouncements.length > 0 ? (
               <div className="leave-list-container">
-                {leaveFaculty.map((f) => (
-                  <div key={f.id} className="leave-row-item">
+                {leaveAnnouncements.map((ann) => (
+                  <div key={ann.id} className="leave-row-item">
                     <div className="leave-left-info">
-                      {getFacultyAvatar(f.email) ? (
-                        <img src={getFacultyAvatar(f.email)} alt={f.fullName} className="leave-avatar-img" />
+                      {getFacultyAvatar(ann.facultyEmail) ? (
+                        <img src={getFacultyAvatar(ann.facultyEmail)} alt={ann.facultyName} className="leave-avatar-img" />
                       ) : (
                         <div className="leave-avatar-placeholder">
-                          {getInitials(f.fullName)}
+                          {getInitials(ann.facultyName)}
                         </div>
                       )}
                       <div className="leave-body-info">
-                        <p className="leave-faculty-name">{f.fullName}</p>
-                        <span className="leave-faculty-reason">{getLeaveReasonForFaculty(f.email)}</span>
-                        <span className="leave-faculty-return">Returns: <strong>{getReturnDateForFaculty(f.email)}</strong></span>
+                        <p className="leave-faculty-name">{ann.facultyName}</p>
+                        <span className="leave-faculty-reason">{ann.reason}</span>
+                        <span className="leave-faculty-return">Returns: <strong>{ann.returnDate}</strong></span>
                       </div>
                     </div>
                     <span className="leave-status-dot"></span>

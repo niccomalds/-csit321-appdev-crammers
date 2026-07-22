@@ -39,7 +39,10 @@ public class UserAccountEntity {
     private String department;
 
     @Column(length = 120)
-    private String yearCourse;
+    private String course;
+
+    @Column(name = "`year`", length = 120)
+    private String year;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -48,14 +51,15 @@ public class UserAccountEntity {
     }
 
     public UserAccountEntity(String fullName, String email, String passwordHash, UserRole role,
-                       String idNumber, String department, String yearCourse) {
+                       String idNumber, String department, String course, String year) {
         this.fullName = fullName;
         this.email = email.toLowerCase().trim();
         this.passwordHash = passwordHash;
         this.role = role;
         this.idNumber = idNumber;
         this.department = department;
-        this.yearCourse = yearCourse;
+        this.course = course;
+        this.year = year;
     }
 
     public Long getId() { return id; }
@@ -65,6 +69,11 @@ public class UserAccountEntity {
     public UserRole getRole() { return role; }
     public String getIdNumber() { return idNumber; }
     public String getDepartment() { return department; }
-    public String getYearCourse() { return yearCourse; }
+    public String getCourse() { return course; }
+    public String getYear() { return year; }
+    public String getYearCourse() {
+        if (this.year == null && this.course == null) return null;
+        return this.year + " - " + this.course;
+    }
     public Instant getCreatedAt() { return createdAt; }
 }

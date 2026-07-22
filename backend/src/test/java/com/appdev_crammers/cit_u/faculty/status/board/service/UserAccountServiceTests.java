@@ -24,7 +24,7 @@ class UserAccountServiceTests {
     @Test
     void registersAndAuthenticatesStudent() {
         RegisterRequest request = new RegisterRequest(
-                "Test Student", "3rd Year - BSIT", "student.test@cit.edu",
+                "Test Student", "College of Computer Studies", "BSIT", "3rd Year", "student.test@cit.edu",
                 "22-1234-567", "password123");
 
         UserResponse registered = userAccountService.register(request);
@@ -37,7 +37,7 @@ class UserAccountServiceTests {
     @Test
     void rejectsDuplicateEmail() {
         RegisterRequest request = new RegisterRequest(
-                "Test Student", "3rd Year - BSIT", "duplicate@cit.edu",
+                "Test Student", "College of Computer Studies", "BSIT", "3rd Year", "duplicate@cit.edu",
                 "22-1234-568", "password123");
         userAccountService.register(request);
 
@@ -48,7 +48,7 @@ class UserAccountServiceTests {
     @Test
     void deletesRegisteredUser() {
         RegisterRequest request = new RegisterRequest(
-                "Deletable Student", "3rd Year - BSIT", "delete.me@cit.edu",
+                "Deletable Student", "College of Computer Studies", "BSIT", "3rd Year", "delete.me@cit.edu",
                 "22-9999-999", "password123");
         UserResponse registered = userAccountService.register(request);
 

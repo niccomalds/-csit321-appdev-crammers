@@ -66,7 +66,7 @@ function StudentConsultationSchedule() {
       case 'Available': return 'Available';
       case 'Busy': return 'In a Meeting';
       case 'InClass': return 'Class Ongoing';
-      case 'Out': return 'Out of Office';
+      case 'Out': return 'Do Not Disturb';
       default: return 'Available';
     }
   };

@@ -17,9 +17,11 @@ import com.appdev_crammers.cit_u.faculty.status.board.repository.ConsultationSch
 public class ConsultationScheduleService {
 
     private final ConsultationScheduleRepository schedules;
+    private final NotificationService notificationService;
 
-    public ConsultationScheduleService(ConsultationScheduleRepository schedules) {
+    public ConsultationScheduleService(ConsultationScheduleRepository schedules, NotificationService notificationService) {
         this.schedules = schedules;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -37,7 +39,16 @@ public class ConsultationScheduleService {
                 request.location().trim()
         );
 
-        return ConsultationScheduleResponse.from(schedules.save(schedule));
+        ConsultationScheduleEntity saved = schedules.save(schedule);
+
+        // Trigger notifications
+        String studentMsg = faculty.getFullName() + " updated consultation schedule";
+        String facultyMsg = "Weekly consultation schedule updated successfully.";
+
+        notificationService.createNotificationsForRole(UserRole.STUDENT, studentMsg, "schedule");
+        notificationService.createNotification(faculty, facultyMsg, "schedule");
+
+        return ConsultationScheduleResponse.from(saved);
     }
 
     @Transactional(readOnly = true)

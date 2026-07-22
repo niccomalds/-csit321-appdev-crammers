@@ -9,7 +9,9 @@ function RegisterPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
-    yearCourse: "",
+    department: "",
+    course: "",
+    year: "",
     email: "",
     idNumber: "",
     password: "",
@@ -24,7 +26,9 @@ function RegisterPage() {
   const handleClear = () => {
     setFormData({
       fullName: "",
-      yearCourse: "",
+      department: "",
+      course: "",
+      year: "",
       email: "",
       idNumber: "",
       password: "",
@@ -36,7 +40,15 @@ function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    if (!formData.fullName || !formData.yearCourse || !formData.email || !formData.idNumber || !formData.password) {
+    if (
+      !formData.fullName ||
+      !formData.department ||
+      !formData.course ||
+      !formData.year ||
+      !formData.email ||
+      !formData.idNumber ||
+      !formData.password
+    ) {
       setError("Please fill in all fields.");
       return;
     }
@@ -110,15 +122,44 @@ function RegisterPage() {
               </div>
 
               <div className="register-form-group">
-                <label>Year & Course</label>
-                <input 
-                  type="text" 
-                  name="yearCourse"
-                  placeholder="3rd Year - BS Computer Science" 
-                  value={formData.yearCourse}
+                <label>Department</label>
+                <select 
+                  name="department"
+                  value={formData.department}
                   onChange={handleChange}
                   required 
-                />
+                >
+                  <option value="">Select Department</option>
+                  <option value="College of Computer Studies">College of Computer Studies</option>
+                  <option value="College of Engineering and Architecture">College of Engineering and Architecture</option>
+                  <option value="College of Management, Business and Accountancy">College of Management, Business and Accountancy</option>
+                  <option value="College of Arts, Sciences and Education">College of Arts, Sciences and Education</option>
+                </select>
+              </div>
+
+              <div className="register-form-row">
+                <div className="register-form-group register-form-group-year">
+                  <label>Year Level</label>
+                  <input 
+                    type="text" 
+                    name="year"
+                    placeholder="e.g. 3rd" 
+                    value={formData.year}
+                    onChange={handleChange}
+                    required 
+                  />
+                </div>
+                <div className="register-form-group register-form-group-course">
+                  <label>Course</label>
+                  <input 
+                    type="text" 
+                    name="course"
+                    placeholder="e.g. BSCS" 
+                    value={formData.course}
+                    onChange={handleChange}
+                    required 
+                  />
+                </div>
               </div>
 
               <div className="register-form-group">

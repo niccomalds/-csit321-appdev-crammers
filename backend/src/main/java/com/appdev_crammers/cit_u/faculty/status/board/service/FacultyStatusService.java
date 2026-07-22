@@ -21,12 +21,14 @@ public class FacultyStatusService {
     private final UserAccountRepository users;
     private final FacultyStatusRepository statuses;
     private final SimpMessagingTemplate messaging;
+    private final NotificationService notificationService;
 
     public FacultyStatusService(UserAccountRepository users, FacultyStatusRepository statuses,
-                          SimpMessagingTemplate messaging) {
+                          SimpMessagingTemplate messaging, NotificationService notificationService) {
         this.users = users;
         this.statuses = statuses;
         this.messaging = messaging;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -48,8 +50,28 @@ public class FacultyStatusService {
         FacultyStatusEntity status = findStatus(id);
         status.update(request.status(), request.description(), request.room());
         FacultyResponse response = FacultyResponse.from(faculty, statuses.save(status));
+        
+        // Trigger real-time status update notifications
+        String statusLabel = getFriendlyStatus(request.status());
+        String msgDetail = (request.description() == null || request.description().isBlank()) ? "" : " — " + request.description();
+        String studentMsg = faculty.getFullName() + " changed status to " + statusLabel + msgDetail;
+        String facultyMsg = "Your status was successfully updated to '" + statusLabel + "'." + msgDetail;
+
+        notificationService.createNotificationsForRole(UserRole.STUDENT, studentMsg, "status");
+        notificationService.createNotification(faculty, facultyMsg, "status");
+
         messaging.convertAndSend("/topic/faculty-status", response);
         return response;
+    }
+
+    private String getFriendlyStatus(com.appdev_crammers.cit_u.faculty.status.board.entity.AvailabilityStatus status) {
+        if (status == null) return "Available";
+        return switch (status) {
+            case AVAILABLE -> "Available";
+            case IN_CLASS -> "Class Ongoing";
+            case BUSY -> "In a Meeting";
+            case OUT -> "Do Not Disturb";
+        };
     }
 
     private UserAccountEntity findFaculty(Long id) {

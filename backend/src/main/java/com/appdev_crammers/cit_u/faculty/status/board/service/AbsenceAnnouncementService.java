@@ -17,9 +17,11 @@ import com.appdev_crammers.cit_u.faculty.status.board.repository.AbsenceAnnounce
 public class AbsenceAnnouncementService {
 
     private final AbsenceAnnouncementRepository announcements;
+    private final NotificationService notificationService;
 
-    public AbsenceAnnouncementService(AbsenceAnnouncementRepository announcements) {
+    public AbsenceAnnouncementService(AbsenceAnnouncementRepository announcements, NotificationService notificationService) {
         this.announcements = announcements;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -37,7 +39,16 @@ public class AbsenceAnnouncementService {
                 request.returnDate(),
                 request.details().trim());
 
-        return AbsenceAnnouncementResponse.from(announcements.save(announcement));
+        AbsenceAnnouncementEntity saved = announcements.save(announcement);
+
+        // Trigger notifications
+        String studentMsg = faculty.getFullName() + " published an absence notice: " + saved.getReason();
+        String facultyMsg = "Absence announcement published for upcoming leave: " + saved.getReason();
+
+        notificationService.createNotificationsForRole(UserRole.STUDENT, studentMsg, "absence");
+        notificationService.createNotification(faculty, facultyMsg, "absence");
+
+        return AbsenceAnnouncementResponse.from(saved);
     }
 
     @Transactional(readOnly = true)

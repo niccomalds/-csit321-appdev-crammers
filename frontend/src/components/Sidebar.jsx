@@ -115,6 +115,17 @@ function Sidebar({ activeTab = 'dashboard' }) {
                     <span className="nav-label">Status Management</span>
                   </a>
                 </li>
+                <li className={`nav-item ${activeTab === 'class-schedule' ? 'active' : ''}`}>
+                  <a href="#class-schedule" className="nav-link" onClick={(e) => handleTabClick(e, 'class-schedule')}>
+                    <span className="nav-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                    </span>
+                    <span className="nav-label">Class Schedules</span>
+                  </a>
+                </li>
                 <li className={`nav-item ${activeTab === 'schedule' ? 'active' : ''}`}>
                   <a href="#schedule" className="nav-link" onClick={(e) => handleTabClick(e, 'schedule')}>
                     <span className="nav-icon">

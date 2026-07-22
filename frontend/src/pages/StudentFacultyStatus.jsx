@@ -37,6 +37,43 @@ const convertTo12Hour = (timeStr) => {
   return `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
 };
 
+const getClassStatus = (startTimeStr, endTimeStr) => {
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const parseTimeToMinutes = (timeStr) => {
+    if (!timeStr) return 0;
+    const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)?$/i);
+    if (!match) {
+      const parts = timeStr.split(':');
+      if (parts.length >= 2) {
+        return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+      }
+      return 0;
+    }
+    let [_, hours, minutes, ampm] = match;
+    hours = parseInt(hours, 10);
+    minutes = parseInt(minutes, 10);
+    if (ampm) {
+      const isPM = ampm.toUpperCase() === "PM";
+      if (isPM && hours < 12) hours += 12;
+      if (!isPM && hours === 12) hours = 0;
+    }
+    return hours * 60 + minutes;
+  };
+
+  const startMinutes = parseTimeToMinutes(startTimeStr);
+  const endMinutes = parseTimeToMinutes(endTimeStr);
+
+  if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
+    return "Ongoing";
+  } else if (currentMinutes > endMinutes) {
+    return "Ended";
+  } else {
+    return "Upcoming";
+  }
+};
+
 function StudentFacultyStatus() {
   const faculty = useFacultyList();
   const [search, setSearch] = useState("");
@@ -87,9 +124,9 @@ function StudentFacultyStatus() {
   const getStatusLabel = (status) => {
     switch (status) {
       case 'Available': return 'Available';
-      case 'Busy': return 'In a Meeting';
+      case 'Busy': return 'Busy';
       case 'InClass': return 'Class Ongoing';
-      case 'Out': return 'Out of Office';
+      case 'Out': return 'Do Not Disturb';
       default: return 'Available';
     }
   };
@@ -113,13 +150,13 @@ function StudentFacultyStatus() {
   // Filters logic
   const filteredFaculty = faculty.filter(f => {
     const matchesSearch = f.fullName.toLowerCase().includes(search.toLowerCase());
-    
+
     if (statusFilter === "All") return matchesSearch;
     if (statusFilter === "Available") return matchesSearch && f.status === "Available";
     if (statusFilter === "InClass") return matchesSearch && f.status === "InClass";
     if (statusFilter === "Busy") return matchesSearch && f.status === "Busy";
     if (statusFilter === "Out") return matchesSearch && f.status === "Out";
-    
+
     return matchesSearch;
   });
 
@@ -132,9 +169,9 @@ function StudentFacultyStatus() {
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <input 
-            type="text" 
-            placeholder="Search faculty name..." 
+          <input
+            type="text"
+            placeholder="Search faculty name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="search-input-field"
@@ -157,25 +194,28 @@ function StudentFacultyStatus() {
 
       {/* Main Split Panels */}
       <div className="faculty-panels-layout">
-        
+
         {/* Left Column: Faculty Directory Cards List */}
         <div className="faculty-list-panel">
           {filteredFaculty.length > 0 ? (
             <div className="faculty-cards-list">
               {filteredFaculty.map((item) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className={`faculty-list-card ${selectedFaculty?.id === item.id ? 'active-card' : ''}`}
                   onClick={() => setSelectedFacultyId(item.id)}
                 >
                   <div className="faculty-card-left">
-                     {getFacultyAvatar(item.email) ? (
-                      <img src={getFacultyAvatar(item.email)} alt={item.fullName} className="faculty-card-avatar" />
-                    ) : (
-                      <div className="faculty-avatar-abbr">
-                        {getInitials(item.fullName)}
-                      </div>
-                    )}
+                    <div className="avatar-container">
+                      {getFacultyAvatar(item.email) ? (
+                        <img src={getFacultyAvatar(item.email)} alt={item.fullName} className="faculty-card-avatar" />
+                      ) : (
+                        <div className="faculty-avatar-abbr">
+                          {getInitials(item.fullName)}
+                        </div>
+                      )}
+                      <span className={`avatar-status-dot ${getStatusDot(item.status)}`}></span>
+                    </div>
                     <div className="faculty-card-main-info">
                       <h4 className="faculty-card-name">{item.fullName}</h4>
                       <span className="faculty-card-dept">{item.department}</span>
@@ -213,7 +253,7 @@ function StudentFacultyStatus() {
                 <div className="details-meta-right">
                   <h3 className="details-faculty-name">{selectedFaculty.fullName}</h3>
                   <span className="details-faculty-id">ID: {selectedFaculty.idNumber}</span>
-                  
+
                   <div className="details-status-container">
                     <span className={`faculty-status-badge ${getStatusBadgeClass(selectedFaculty.status)}`}>
                       <span className={`status-dot-indicator ${getStatusDot(selectedFaculty.status)}`}></span>
@@ -243,22 +283,30 @@ function StudentFacultyStatus() {
 
               {/* Today's class schedule list */}
               <div className="details-schedule-section">
-                <h4 className="schedule-section-title">Today's Class Schedule</h4>
+                <h4 className="schedule-section-title">Class Schedule</h4>
 
                 {facultyClasses.length > 0 ? (
                   <div className="details-classes-timeline">
-                    {facultyClasses.map((item) => (
-                      <div key={item.id} className={`timeline-class-item ${item.completed ? 'class-completed' : ''}`}>
-                        <div className="timeline-class-left">
-                          <span className="timeline-class-time">{item.startTime} - {item.endTime}</span>
-                          <h5 className="timeline-class-subject">{item.subject}</h5>
-                          <span className="timeline-class-meta">Section: {item.section} · Room: {item.room}</span>
+                    {facultyClasses.map((item) => {
+                      const classStatus = getClassStatus(item.startTime, item.endTime);
+                      const isEnded = classStatus === 'Ended';
+                      const isOngoing = classStatus === 'Ongoing';
+                      return (
+                        <div key={item.id} className={`timeline-class-item ${isEnded ? 'class-completed' : ''} ${isOngoing ? 'class-ongoing' : ''}`}>
+                          <div className="timeline-class-left">
+                            <span className="timeline-class-time">{item.startTime} - {item.endTime}</span>
+                            <h5 className="timeline-class-subject">{item.subject}</h5>
+                            <span className="timeline-class-meta">Section: {item.section} · Room: {item.room}</span>
+                          </div>
+                          <div className={`timeline-status-badge ${
+                            isOngoing ? 'ongoing-badge' : 
+                            isEnded ? 'completed-badge' : 'pending-badge'
+                          }`}>
+                            {classStatus}
+                          </div>
                         </div>
-                        <div className={`timeline-status-badge ${item.completed ? 'completed-badge' : 'pending-badge'}`}>
-                          {item.completed ? 'Completed' : 'Upcoming'}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="empty-classes-box">
