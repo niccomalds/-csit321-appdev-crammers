@@ -59,4 +59,12 @@ public class NotificationService {
                 .toList();
         notificationRepository.saveAll(notifications);
     }
+
+    @Transactional
+    public void deleteNotification(Long id) {
+        if (!notificationRepository.existsById(id)) {
+            throw new IllegalArgumentException("Notification not found");
+        }
+        notificationRepository.deleteById(id);
+    }
 }

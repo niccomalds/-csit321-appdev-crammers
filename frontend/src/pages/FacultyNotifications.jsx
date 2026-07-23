@@ -18,6 +18,8 @@ function FacultyNotifications() {
 
   useEffect(() => {
     loadNotifications();
+    window.addEventListener("dashboard-reloaded", loadNotifications);
+    return () => window.removeEventListener("dashboard-reloaded", loadNotifications);
   }, [currentUser?.id]);
 
   const handleMarkAsRead = (id) => {
@@ -26,6 +28,15 @@ function FacultyNotifications() {
         setNotifications(prev => prev.map(notif => notif.id === id ? { ...notif, unread: false } : notif));
       })
       .catch(err => console.error("Failed to mark notification as read:", err));
+  };
+
+  const handleDeleteNotification = (e, id) => {
+    e.stopPropagation();
+    notificationApi.deleteNotification(id)
+      .then(() => {
+        setNotifications(prev => prev.filter(notif => notif.id !== id));
+      })
+      .catch(err => console.error("Failed to delete notification:", err));
   };
 
   const handleMarkAllRead = () => {
@@ -149,12 +160,38 @@ function FacultyNotifications() {
                     </div>
                   </div>
 
-                  <div className="notif-card-right">
+                  <div className="notif-card-right" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {notif.unread ? (
                       <span className="unread-badge">New</span>
                     ) : (
                       <span className="read-badge">Read</span>
                     )}
+                    <button 
+                      className="delete-notif-btn" 
+                      onClick={(e) => handleDeleteNotification(e, notif.id)}
+                      title="Delete notification"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#9ca3af',
+                        cursor: 'pointer',
+                        padding: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.color = '#ef4444'}
+                      onMouseOut={(e) => e.currentTarget.style.color = '#9ca3af'}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               ))}

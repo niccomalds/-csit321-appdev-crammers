@@ -30,10 +30,17 @@ public class DevelopmentDataSeeder {
             } catch (Exception e) {
                 // Ignore if the column or table does not exist
             }
-            if (users.findByEmailIgnoreCase("teacher@cit.edu").isPresent()) return;
+
+            try {
+                jdbcTemplate.update("UPDATE user_accounts SET email = 'josemarie.amparo@cit.edu' WHERE email = 'teacher@cit.edu'");
+            } catch (Exception e) {
+                // Ignore if table doesn't exist yet
+            }
+
+            if (users.findByEmailIgnoreCase("josemarie.amparo@cit.edu").isPresent()) return;
 
             List<FacultySeed> seeds = List.of(
-                    new FacultySeed("Josemarie C. Amparo", "teacher@cit.edu", "FAC-2024-0001",
+                    new FacultySeed("Josemarie C. Amparo", "josemarie.amparo@cit.edu", "FAC-2024-0001",
                             AvailabilityStatus.OUT, "Dubai Hackathon 2026 — Official Representation", "CSS Dept. Faculty Room"),
                     new FacultySeed("Leah V. Barbaso", "leah.barbaso@cit.edu", "FAC-2024-0002",
                             AvailabilityStatus.IN_CLASS, "Class Ongoing — ITEC 312, Lab 3", "CSS Dept. Faculty Room"),
@@ -50,7 +57,7 @@ public class DevelopmentDataSeeder {
                         "College of Computer Studies", null, null));
                 statuses.save(new FacultyStatusEntity(faculty, seed.status(), seed.description(), seed.room()));
 
-                if (seed.email().equals("teacher@cit.edu")) {
+                if (seed.email().equals("josemarie.amparo@cit.edu")) {
                     consultationSchedules.save(new ConsultationScheduleEntity(faculty, "Monday", "Face-to-Face", "09:00 AM", "11:00 AM", "CSS Dept. Faculty Room"));
                     consultationSchedules.save(new ConsultationScheduleEntity(faculty, "Wednesday", "Online", "09:00 AM", "11:00 AM", "CSS Dept. Faculty Room"));
                 } else if (seed.email().equals("leah.barbaso@cit.edu")) {

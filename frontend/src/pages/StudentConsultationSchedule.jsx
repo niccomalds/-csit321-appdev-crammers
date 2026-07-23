@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './StudentConsultationSchedule.css';
 import { consultationScheduleApi } from '../api/consultationScheduleApi';
+import { useFacultyList } from '../hooks/useFacultyList';
 import josemarieImg from '../assets/images/josemarie.jpg';
 import leahImg from '../assets/images/leah.jpg';
 import tulinImg from '../assets/images/tulin.jpg';
@@ -9,7 +10,7 @@ import vonImg from '../assets/images/von.jpg';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
-    case 'teacher@cit.edu':
+    case 'josemarie.amparo@cit.edu':
       return josemarieImg;
     case 'leah.barbaso@cit.edu':
       return leahImg;
@@ -25,23 +26,23 @@ const getFacultyAvatar = (email) => {
 };
 
 function StudentConsultationSchedule() {
-  const [faculty, setFaculty] = useState([]);
+  const faculty = useFacultyList();
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [consultations, setConsultations] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const list = localStorage.getItem("facultyList");
-    if (list) {
-      const parsed = JSON.parse(list);
-      setFaculty(parsed);
-      if (parsed.length > 0) {
-        setSelectedFaculty(parsed[0]);
+    if (faculty.length > 0 && !selectedFaculty) {
+      setSelectedFaculty(faculty[0]);
+    } else if (selectedFaculty) {
+      const updated = faculty.find(f => f.id === selectedFaculty.id);
+      if (updated) {
+        setSelectedFaculty(updated);
       }
     }
-  }, []);
+  }, [faculty]);
 
-  useEffect(() => {
+  const loadConsultations = () => {
     if (!selectedFaculty) {
       setConsultations([]);
       return;
@@ -54,6 +55,15 @@ function StudentConsultationSchedule() {
         console.error("Failed to load consultation schedules:", err);
         setConsultations([]);
       });
+  };
+
+  useEffect(() => {
+    loadConsultations();
+  }, [selectedFaculty]);
+
+  useEffect(() => {
+    window.addEventListener("dashboard-reloaded", loadConsultations);
+    return () => window.removeEventListener("dashboard-reloaded", loadConsultations);
   }, [selectedFaculty]);
 
   const getInitials = (name) => {

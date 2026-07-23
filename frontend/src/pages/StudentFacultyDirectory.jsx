@@ -9,7 +9,7 @@ import { useFacultyList } from '../hooks/useFacultyList';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
-    case 'teacher@cit.edu':
+    case 'josemarie.amparo@cit.edu':
       return josemarieImg;
     case 'leah.barbaso@cit.edu':
       return leahImg;

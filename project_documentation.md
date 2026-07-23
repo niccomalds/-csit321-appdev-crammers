@@ -14,6 +14,11 @@
 ## 1. Entity Relationship Diagram (ERD)
 The ERD maps out the structural data model of the application, representing database persistence relationships between user accounts, real-time statuses, schedules, absence logs, and notification feeds.
 
+![Entity Relationship Diagram](./diagrams/erd.png)
+
+<details>
+<summary>💻 View Mermaid Source Code</summary>
+
 ```mermaid
 erDiagram
     USER_ACCOUNT ||--o| FACULTY_STATUS : "has (1:1)"
@@ -82,11 +87,17 @@ erDiagram
         datetime timestamp
     }
 ```
+</details>
 
 ---
 
 ## 2. Use Case Diagram
 This diagram outlines the interactions between the two primary Actors (Faculty and Student) and the key behaviors supported by the system.
+
+![Use Case Diagram](./diagrams/use_case.png)
+
+<details>
+<summary>💻 View Mermaid Source Code</summary>
 
 ```mermaid
 graph TD
@@ -124,11 +135,17 @@ graph TD
     Student --> UC9
     Student --> UC10
 ```
+</details>
 
 ---
 
 ## 3. Class Diagram
 The Class Diagram models the technical composition of the Spring Boot backend layer, showcasing relationships between entities, service handlers, repository queries, and REST controllers.
+
+![Class Diagram](./diagrams/class_diagram.png)
+
+<details>
+<summary>💻 View Mermaid Source Code</summary>
 
 ```mermaid
 classDiagram
@@ -196,11 +213,17 @@ classDiagram
     FacultyStatusController --> FacultyStatusService : delegates
     NotificationService ..> NotificationEntity : persists
 ```
+</details>
 
 ---
 
 ## 4. Activity Diagram
 This workflow maps the sequence of actions and state decisions when a Faculty member updates their availability status.
+
+![Activity Diagram](./diagrams/activity_diagram.png)
+
+<details>
+<summary>💻 View Mermaid Source Code</summary>
 
 ```mermaid
 flowchart TD
@@ -219,11 +242,17 @@ flowchart TD
     RefreshDashboard --> UpdateUI[Update Status indicator lights & metric cards]
     UpdateUI --> End([End])
 ```
+</details>
 
 ---
 
 ## 5. Sequence Diagram
 This displays the sequential flow of messages between system actors and technical components during a status update and subsequent student directory sync.
+
+![Sequence Diagram](./diagrams/sequence_diagram.png)
+
+<details>
+<summary>💻 View Mermaid Source Code</summary>
 
 ```mermaid
 sequenceDiagram
@@ -265,3 +294,4 @@ sequenceDiagram
     deactivate Controller
     Student->>Student: Re-calculate metrics & update profile avatar lights
 ```
+</details>

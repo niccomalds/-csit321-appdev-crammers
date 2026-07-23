@@ -22,5 +22,9 @@ export const notificationApi = {
 
   markAllAsRead: async (userId) => {
     await api.put(`/notifications/user/${userId}/read-all`);
+  },
+
+  deleteNotification: async (id) => {
+    await api.delete(`/notifications/${id}`);
   }
 };

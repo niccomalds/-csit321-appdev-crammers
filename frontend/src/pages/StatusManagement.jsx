@@ -10,7 +10,7 @@ import ugangImg from "../assets/images/ugang.jpg";
 import vonImg from "../assets/images/von.jpg";
 
 const facultyImages = {
-  "teacher@cit.edu": josemarieImg,
+  "josemarie.amparo@cit.edu": josemarieImg,
   "leah.barbaso@cit.edu": leahImg,
   "jasmine.tulin@cit.edu": tulinImg,
   "roden.ugang@cit.edu": ugangImg,
