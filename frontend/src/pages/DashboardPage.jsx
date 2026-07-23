@@ -94,6 +94,59 @@ function DashboardPage() {
     return `${dayName}, ${monthName} ${dateNum} · ${hours}:${minutesStr} ${ampm}`;
   };
 
+  const syncBoardData = async () => {
+    const loggedInUser = localStorage.getItem("currentUser");
+    if (!loggedInUser) return;
+    const userObj = JSON.parse(loggedInUser);
+
+    try {
+      const data = await facultyApi.findAll();
+      localStorage.setItem("facultyList", JSON.stringify(data));
+      notifyFacultyStatusUpdated();
+    } catch (err) {
+      console.error("Failed to sync faculty status board:", err);
+    }
+
+    if (userObj && userObj.id && userObj.role?.toLowerCase() === 'faculty') {
+      try {
+        const data = await facultyApi.findById(userObj.id);
+        const mappedStatus = data.status || "Available";
+        setCurrentStatus(mappedStatus);
+        setCurrentStatusDescription(data.statusDescription || "");
+        localStorage.setItem("currentStatus", mappedStatus);
+        localStorage.setItem("currentStatusDescription", data.statusDescription || "");
+      } catch (err) {
+        console.error("Failed to load live status:", err);
+      }
+
+      try {
+        const data = await scheduleApi.getSchedulesByFaculty(userObj.id);
+        setSchedulesCount(data.length);
+      } catch (err) {
+        console.error("Failed to load schedule count:", err);
+      }
+
+      try {
+        const data = await announcementApi.getAnnouncementsByFaculty(userObj.id);
+        const mapped = data.map(item => ({
+          ...item,
+          description: item.details || item.description
+        }));
+        setAnnouncements(mapped);
+        setAnnouncementsCount(mapped.length);
+      } catch (err) {
+        console.error("Failed to load announcements count:", err);
+      }
+
+      try {
+        const data = await consultationScheduleApi.getSchedulesByFaculty(userObj.id);
+        setConsultations(data);
+      } catch (err) {
+        console.error("Failed to load consultation schedules:", err);
+      }
+    }
+  };
+
   // Clock tick effect & Data Seed
   useEffect(() => {
     const loggedInUser = localStorage.getItem("currentUser");
@@ -102,52 +155,7 @@ function DashboardPage() {
       return;
     }
 
-    const userObj = JSON.parse(loggedInUser);
-
-    // Fetch faculty status list from Spring Boot backend to sync the board
-    facultyApi.findAll().then(data => {
-      localStorage.setItem("facultyList", JSON.stringify(data));
-      notifyFacultyStatusUpdated();
-    }).catch(err => console.error("Failed to sync faculty status board:", err));
-
-    if (userObj && userObj.id && userObj.role?.toLowerCase() === 'faculty') {
-      // 1. Fetch live status
-      facultyApi.findById(userObj.id)
-        .then(data => {
-          const mappedStatus = data.status || "Available";
-          setCurrentStatus(mappedStatus);
-          setCurrentStatusDescription(data.statusDescription || "");
-          localStorage.setItem("currentStatus", mappedStatus);
-          localStorage.setItem("currentStatusDescription", data.statusDescription || "");
-        })
-        .catch(err => console.error("Failed to load live status:", err));
-
-      // 2. Fetch schedules count
-      scheduleApi.getSchedulesByFaculty(userObj.id)
-        .then(data => {
-          setSchedulesCount(data.length);
-        })
-        .catch(err => console.error("Failed to load schedule count:", err));
-
-      // 3. Fetch announcements count
-      announcementApi.getAnnouncementsByFaculty(userObj.id)
-        .then(data => {
-          const mapped = data.map(item => ({
-            ...item,
-            description: item.details || item.description
-          }));
-          setAnnouncements(mapped);
-          setAnnouncementsCount(mapped.length);
-        })
-        .catch(err => console.error("Failed to load announcements count:", err));
-
-      // 4. Fetch consultation schedules
-      consultationScheduleApi.getSchedulesByFaculty(userObj.id)
-        .then(data => {
-          setConsultations(data);
-        })
-        .catch(err => console.error("Failed to load consultation schedules:", err));
-    }
+    syncBoardData();
 
     // Initial set
     setCurrentTime(formatDateTime(new Date()));
@@ -160,23 +168,25 @@ function DashboardPage() {
   }, []);
 
   // Handle reload/sync button click
-  const handleReload = () => {
+  const handleReload = async () => {
     if (isSyncing) return;
     setIsSyncing(true);
     
-    // Simulate API fetch delay
-    setTimeout(() => {
-      const now = new Date();
-      let hours = now.getHours();
-      const minutes = now.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      const minutesStr = minutes < 10 ? '0' + minutes : minutes;
-      
-      setLastUpdated(`Today, ${hours}:${minutesStr} ${ampm}`);
-      setIsSyncing(false);
-    }, 850);
+    await syncBoardData();
+    
+    // Broadcast a custom event so child tabs reload their local state as well
+    window.dispatchEvent(new CustomEvent("dashboard-reloaded"));
+
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+    
+    setLastUpdated(`Today, ${hours}:${minutesStr} ${ampm}`);
+    setIsSyncing(false);
   };
 
   // Translate tab ID to friendly name for placeholder titles

@@ -9,7 +9,7 @@ import { announcementApi } from '../api/announcementApi';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
-    case 'teacher@cit.edu':
+    case 'josemarie.amparo@cit.edu':
       return josemarieImg;
     case 'leah.barbaso@cit.edu':
       return leahImg;
@@ -28,7 +28,7 @@ function StudentFacultyAbsences() {
   const [absences, setAbsences] = useState([]);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
+  const loadData = () => {
     announcementApi.getActiveAnnouncements()
       .then(data => {
         const mapped = data.map(item => ({
@@ -40,6 +40,12 @@ function StudentFacultyAbsences() {
       .catch(err => {
         console.error("Failed to load active announcements:", err);
       });
+  };
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener("dashboard-reloaded", loadData);
+    return () => window.removeEventListener("dashboard-reloaded", loadData);
   }, []);
 
   const getAbsenceStatus = (item) => {

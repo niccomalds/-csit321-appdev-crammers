@@ -2,6 +2,7 @@ package com.appdev_crammers.cit_u.faculty.status.board.controller;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,5 +36,11 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markAllAsRead(@PathVariable Long userId) {
         notificationService.markAllAsRead(userId);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteNotification(@PathVariable Long id) {
+        notificationService.deleteNotification(id);
     }
 }

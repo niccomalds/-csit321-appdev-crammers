@@ -12,7 +12,7 @@ import vonImg from '../assets/images/von.jpg';
 
 const getFacultyAvatar = (email) => {
   switch (email) {
-    case 'teacher@cit.edu':
+    case 'josemarie.amparo@cit.edu':
       return josemarieImg;
     case 'leah.barbaso@cit.edu':
       return leahImg;
@@ -34,19 +34,22 @@ function StudentDashboard() {
   const [leaveAnnouncements, setLeaveAnnouncements] = useState([]);
   const [currentUser] = useState(() => JSON.parse(localStorage.getItem("currentUser") || "null"));
 
-  useEffect(() => {
+  const loadData = () => {
     if (currentUser?.id) {
       notificationApi.getNotificationsByUser(currentUser.id)
         .then(data => setNotifications(data))
         .catch(err => console.error("Failed to load notifications:", err));
     }
-  }, [currentUser?.id]);
-
-  useEffect(() => {
     announcementApi.getActiveAnnouncements()
       .then(data => setLeaveAnnouncements(data))
       .catch(err => console.error("Failed to load active announcements:", err));
-  }, []);
+  };
+
+  useEffect(() => {
+    loadData();
+    window.addEventListener("dashboard-reloaded", loadData);
+    return () => window.removeEventListener("dashboard-reloaded", loadData);
+  }, [currentUser?.id]);
 
   const getFirstName = (fullName) => {
     if (!fullName) return "Student";
@@ -71,7 +74,7 @@ function StudentDashboard() {
       }
     }
     // Fallback if it is Josemarie (as standard absenceAnnouncements key)
-    if (email === "teacher@cit.edu") {
+    if (email === "josemarie.amparo@cit.edu") {
       const joseAnnouncements = localStorage.getItem("absenceAnnouncements");
       if (joseAnnouncements) {
         const annList = JSON.parse(joseAnnouncements);
@@ -91,7 +94,7 @@ function StudentDashboard() {
         return annList[0].reason;
       }
     }
-    if (email === "teacher@cit.edu") {
+    if (email === "josemarie.amparo@cit.edu") {
       const joseAnnouncements = localStorage.getItem("absenceAnnouncements");
       if (joseAnnouncements) {
         const annList = JSON.parse(joseAnnouncements);
